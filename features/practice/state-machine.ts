@@ -1,6 +1,7 @@
 import syllables from "./syllables.json";
 import { AliasTable } from "./pick-syllable";
 import { speakText } from "../audio/speak-text";
+import { playAudioFile } from "../audio/sound-file";
 
 type StateMachineAction =
   | { type: "init" }
@@ -53,7 +54,7 @@ export function StateMachineReducer(
   state: StateMachineState,
   action: StateMachineAction
 ): StateMachineState {
-  console.log("tktk StateMachineReducer", state, action);
+  // console.log("tktk StateMachineReducer", state, action);
   const { type } = action;
 
   switch (type) {
@@ -83,7 +84,8 @@ export function StateMachineReducer(
         throw new Error("currentSyllable is not a string");
       }
 
-      speakText(curr);
+      playAudioFile(curr);
+      // speakText(curr);
 
       return {
         ...state,

@@ -7,6 +7,7 @@ import { getThaiTone } from "@/features/thai-tones/tone";
 import { speakText } from "@/features/audio/speak-text";
 import { Text, View } from "react-native";
 import { Button } from "@/components/button";
+import { playAudioFile } from "@/features/audio/sound-file";
 
 function App() {
   const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
@@ -40,7 +41,8 @@ function App() {
             if (!state.uiState.currentSyllable) {
               throw new Error("no current syllable");
             }
-            speakText(state.uiState.currentSyllable);
+            playAudioFile("output_0_mp3.mp3");
+            // speakText(state.uiState.currentSyllable);
           }}
         />
         <Button
