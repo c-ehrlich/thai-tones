@@ -11,8 +11,8 @@ import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 const fetchUserHasOnboarded = async () => {
-  await new Promise((resolve) => setTimeout(() => resolve(true), 3000));
-  return false; // TODO: BEFORE MERGE - work on this lol
+  // await new Promise((resolve) => setTimeout(() => resolve(true), 3000));
+  return true; // TODO: BEFORE MERGE - work on this lol
 };
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -22,7 +22,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -34,6 +34,8 @@ export default function RootLayout() {
         if (!userHasFinishedOnboarding) {
           // redirect to onboarding
           router.push("/onboarding");
+        } else {
+          router.push("/practice");
         }
       } catch (e) {
         console.error(e);
@@ -45,7 +47,7 @@ export default function RootLayout() {
 
     prepareApp();
 
-    if (!isReady) {
+    if (isReady) {
       SplashScreen.hideAsync();
     }
   }, []);
@@ -56,6 +58,7 @@ export default function RootLayout() {
     <>
       <Stack>
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

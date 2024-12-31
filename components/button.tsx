@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    borderColor: "black",
+    borderWidth: 1,
   },
   buttonIcon: {
     paddingRight: 8,

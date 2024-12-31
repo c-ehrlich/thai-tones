@@ -1,9 +1,12 @@
-import { Text, View } from "react-native";
+import { Button } from "@/components/button";
+import { router } from "expo-router";
+import { SafeAreaView, Text } from "react-native";
 
 export default function Index() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>Index</Text>
-    </View>
+      <Button label="Learn" onPress={() => router.push("/learn")} />
+    </SafeAreaView>
   );
 }
