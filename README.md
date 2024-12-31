@@ -1,3 +1,9 @@
+you need to install git lfs. `brew install git-lfs` or similar on other OS.
+
+default expo readme below
+
+--- 
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).

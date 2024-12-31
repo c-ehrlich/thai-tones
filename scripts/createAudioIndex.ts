@@ -16,7 +16,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-function generateAudioIndex() {
+export function generateAudioIndex() {
   // Path to the audio folder
   const audioDir = resolve(__dirname, "../assets/audio");
 
