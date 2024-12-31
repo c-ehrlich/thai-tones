@@ -58,6 +58,18 @@ describe("getThaiTone", () => {
   });
 
   describe("non syllables", () => {
-    it.skip("");
+    it("should throw on empty input", () => {
+      expect(() => getThaiTone("")).toThrow();
+      // @ts-expect-error - testing invalid input
+      expect(() => getThaiTone(undefined)).toThrow();
+    });
+
+    it("should throw on a banned syllable", () => {
+      expect(() => getThaiTone("วชน")).toThrow();
+    });
+
+    it("should throw if there is non thai in the syllable", () => {
+      expect(() => getThaiTone("hello")).toThrow();
+    });
   });
 });

@@ -5,6 +5,8 @@ import { bannedSyllables } from "../practice/pick-syllable";
  */
 export type ThaiTone = "mid" | "low" | "falling" | "high" | "rising";
 
+const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
+
 /**
  * Determine the tone of a single Thai syllable using
  * standard Thai tone rules, *plus* some handling of:
@@ -15,10 +17,16 @@ export type ThaiTone = "mid" | "low" | "falling" | "high" | "rising";
  * Returns a ThaiTone or undefined if we cannot classify.
  */
 export function getThaiTone(syllable: string): ThaiTone | undefined {
-  if (!syllable) return undefined;
+  if (!syllable) {
+    throw new Error("Empty syllable");
+  }
 
   if (bannedSyllables.has(syllable)) {
     throw new Error(`Banned syllable: ${syllable}`);
+  }
+
+  if (!onlyContainsThaiCharactersRegex.test(syllable)) {
+    throw new Error(`Syllable contains non thai characters: ${syllable}`);
   }
 
   // 1. Identify tone marks

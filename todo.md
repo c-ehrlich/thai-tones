@@ -21,3 +21,4 @@
 - [x] super basic TTS (web speech api)
 - [x] super basic tone detection
 - [x] allow replaying audio
+- [x] mechanism for banning syllables
