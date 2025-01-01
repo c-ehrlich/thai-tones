@@ -63,6 +63,9 @@ async function performBatchTTS(requests: TTSRequest[], outputDir: string) {
         const filePath = `${outputDir}/${text}.mp3`;
         await Bun.write(filePath, new Uint8Array(buffer));
         console.log(`Saved: ${filePath}`);
+
+        // avoid rate limiting - at 10/minute it will take ~15h to generate all audio
+        await new Promise((resolve) => setTimeout(resolve, 6_000));
       } catch (error) {
         console.error(`Error processing "${text}":`, error);
 
