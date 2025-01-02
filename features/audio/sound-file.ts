@@ -5,8 +5,6 @@ import { speakText } from "./speak-text";
 export const preloadAudioFile = async (fileName: string) => {
   const sound = new Audio.Sound();
   try {
-    // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
-
     const file = audioFiles[fileName];
 
     if (!file) {
@@ -27,8 +25,6 @@ export const preloadAudioFile = async (fileName: string) => {
 export const playAudioFile = async (fileName: string) => {
   const sound = new Audio.Sound();
   try {
-    // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
-
     const file = audioFiles[fileName];
 
     if (!file) {

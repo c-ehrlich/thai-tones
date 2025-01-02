@@ -13,7 +13,8 @@ import { RootProviders } from "@/components/root-providers";
 import { Globals } from "@/components/globals";
 
 const fetchUserHasOnboarded = async () => {
-  // await new Promise((resolve) => setTimeout(() => resolve(true), 3000));
+  await new Promise((resolve) => setTimeout(() => resolve(true), 1000));
+
   return true; // TODO: BEFORE MERGE - work on this lol
 };
 
