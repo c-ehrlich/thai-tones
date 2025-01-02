@@ -9,76 +9,97 @@ import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
 import { useAxiom } from "@/features/logging/axiom";
 
+function Wrapper({ children }: { children: React.ReactNode }) {
+  return <View className="h-full w-full pb-12">{children}</View>;
+}
+
 function App() {
   const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
   const axiom = useAxiom();
 
   if (state.uiState.status === "init") {
     return (
-      <Button label="Get Syllable" onPress={() => dispatch({ type: "get" })} />
+      <Wrapper>
+        <View className="w-full h-full items-center justify-between">
+          <View />
+          <Button
+            label="Get Syllable"
+            onPress={() => dispatch({ type: "get" })}
+          />
+        </View>
+      </Wrapper>
     );
   }
 
   if (state.uiState.status === "quiz") {
     return (
-      <View>
-        <CurrentSyllable syllable={state.uiState.currentSyllable} />
-        <Button
-          label="Show answer"
-          onPress={() => dispatch({ type: "show-answer" })}
-        ></Button>
-      </View>
+      <Wrapper>
+        <View className="w-full h-full flex flex-col justify-between items-center">
+          <CurrentSyllable syllable={state.uiState.currentSyllable} />
+          <Button
+            label="Show answer"
+            onPress={() => dispatch({ type: "show-answer" })}
+          />
+        </View>
+      </Wrapper>
     );
   }
 
   if (state.uiState.status === "answer") {
     return (
-      <View>
-        <CurrentSyllable syllable={state.uiState.currentSyllable} />
-        <Text>tone: {getThaiTone(state.uiState.currentSyllable)}</Text>
-        <Button
-          label="Replay audio"
-          onPress={() => {
-            if (!state.uiState.currentSyllable) {
-              throw new Error("no current syllable");
-            }
-            console.log("syllable: ", state.uiState.currentSyllable);
-            playAudioFile(state.uiState.currentSyllable);
-          }}
-        />
-        <Button
-          label="Solve right"
-          onPress={() => dispatch({ type: "solve-right" })}
-        />
-        <Button
-          label="Solve wrong"
-          onPress={() => dispatch({ type: "solve-wrong" })}
-        />
-        <Button
-          label="Not a syllable"
-          onPress={() =>
-            axiom.log({
-              type: "syllable_issue",
-              event: {
-                syllable: state.uiState.currentSyllable! ?? null,
-                issue: "not-a-syllable",
-              },
-            })
-          }
-        />
-        <Button
-          label="Incorrect audio or explanation"
-          onPress={() =>
-            axiom.log({
-              type: "syllable_issue",
-              event: {
-                syllable: state.uiState.currentSyllable! ?? null,
-                issue: "incorrect-audio-or-explanation",
-              },
-            })
-          }
-        />
-      </View>
+      <Wrapper>
+        <View className="w-full h-full items-center justify-between">
+          <View className="items-center">
+            <CurrentSyllable syllable={state.uiState.currentSyllable} />
+            <Text>tone: {getThaiTone(state.uiState.currentSyllable)}</Text>
+          </View>
+
+          <View>
+            <Button
+              label="Replay audio"
+              onPress={() => {
+                if (!state.uiState.currentSyllable) {
+                  throw new Error("no current syllable");
+                }
+                console.log("syllable: ", state.uiState.currentSyllable);
+                playAudioFile(state.uiState.currentSyllable);
+              }}
+            />
+            <Button
+              label="Solve right"
+              onPress={() => dispatch({ type: "solve-right" })}
+            />
+            <Button
+              label="Solve wrong"
+              onPress={() => dispatch({ type: "solve-wrong" })}
+            />
+            <Button
+              label="Not a syllable"
+              onPress={() =>
+                axiom.log({
+                  type: "syllable_issue",
+                  event: {
+                    syllable: state.uiState.currentSyllable! ?? null,
+                    issue: "not-a-syllable",
+                  },
+                })
+              }
+            />
+            <Button
+              label="Incorrect audio or explanation"
+              onPress={() =>
+                axiom.log({
+                  type: "syllable_issue",
+                  event: {
+                    syllable: state.uiState.currentSyllable! ?? null,
+                    issue: "incorrect-audio-or-explanation",
+                  },
+                })
+              }
+            />
+          </View>
+        </View>
+      </Wrapper>
     );
   }
 
@@ -87,8 +108,8 @@ function App() {
 
 function CurrentSyllable({ syllable }: { syllable: string }) {
   return (
-    <View style={{ width: "100%", alignItems: "center" }}>
-      <Text style={{ fontSize: 48, paddingTop: 8 }}>{syllable}</Text>
+    <View className="w-full items-center">
+      <Text className="text-5xl pt-2">{syllable}</Text>
     </View>
   );
 }

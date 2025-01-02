@@ -4,14 +4,13 @@
 //   ThemeProvider,
 // } from "@react-navigation/native";
 import React from "react";
+import "@/global.css";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { RootProviders } from "@/components/root-providers";
-import "@/util/polyfills";
-import "react-native-reanimated";
 
 const fetchUserHasOnboarded = async () => {
   // await new Promise((resolve) => setTimeout(() => resolve(true), 3000));
