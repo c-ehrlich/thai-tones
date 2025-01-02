@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 
 import dotenv from "dotenv";
 import { audioFiles } from "@/assets/audio/_audio-files";
-import { generateAudioIndex } from "./createAudioIndex";
+import { generateAudioIndex } from "./create-audio-index";
 dotenv.config({ path: "../.env" });
 
 // Load environment variables

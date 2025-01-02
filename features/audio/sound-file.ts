@@ -5,7 +5,7 @@ import { speakText } from "./speak-text";
 export const preloadAudioFile = async (fileName: string) => {
   const sound = new Audio.Sound();
   try {
-    fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
+    // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
 
     // @ts-expect-error we are intentionally indexing into something that might be undefined
     const file = audioFiles[fileName];
@@ -28,7 +28,7 @@ export const preloadAudioFile = async (fileName: string) => {
 export const playAudioFile = async (fileName: string) => {
   const sound = new Audio.Sound();
   try {
-    fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
+    // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
 
     // @ts-expect-error we are intentionally indexing into something that might be undefined
     const file = audioFiles[fileName];

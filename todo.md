@@ -25,7 +25,13 @@
 - [ ] better TTS (Azure https://speech.microsoft.com/portal/voicegallery)
   - [x] set up
   - [x] generate all syllables
+  - [ ] go through syllables, tag
+    - [ ] yellow: probably a syllable, but audio is bad
+    - [ ] green: good
+    - [ ] blue: no idea...
+    - [ ] purple: (c1)a-(c2) pattern
   - [ ] delete non syllables
+  - [ ] write a script that checks which syllables from the map are missing, delete them from the map and from the json
 - [ ] enhance tone detection - return:
       - tone
       - consonant
