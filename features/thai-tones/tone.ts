@@ -3,7 +3,14 @@ import { bannedSyllables } from "../practice/pick-syllable";
 /**
  * Possible Thai tone labels
  */
-export type ThaiTone = "mid" | "low" | "falling" | "high" | "rising";
+export const ThaiTones = {
+  Mid: "Mid",
+  Low: "Low",
+  Falling: "Falling",
+  High: "High",
+  Rising: "Rising",
+};
+export type ThaiTone = (typeof ThaiTones)[keyof typeof ThaiTones];
 
 const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
 
@@ -23,7 +30,27 @@ function getToneMarkInfo(syllable: string): ThaiToneMarkInfo {
   return { hasMaiEk, hasMaiTho, hasMaiTri, hasMaiChattawa };
 }
 
-function getThaiTone({
+const ThaiToneReason = {
+  NoMarkLowConsonant: "no-mark-low-consonant",
+  NoMarkMidConsonantLive: "no-mark-mid-consonant-live",
+  NoMarkMidConsonantDead: "no-mark-mid-consonant-dead",
+  NoMarkHighConsonant: "no-mark-high-consonant",
+  MaiEkHighConsonant: "mai-ek-high-consonant",
+  MaiEkMidConsonant: "mai-ek-mid-consonant",
+  MaiEkLowConsonant: "mai-ek-low-consonant",
+  MaiThoHighConsonant: "mai-tho-high-consonant",
+  MaiThoMidConsonant: "mai-tho-mid-consonant",
+  MaiThoLowConsonant: "mai-tho-low-consonant",
+  MaiTriHighConsonant: "mai-tri-high-consonant",
+  MaiTriMidConsonant: "mai-tri-mid-consonant",
+  MaiTriLowConsonant: "mai-tri-low-consonant",
+  MaiChattawaHighConsonant: "mai-chattawa-high-consonant",
+  MaiChattawaMidConsonant: "mai-chattawa-mid-consonant",
+  MaiChattawaLowConsonant: "mai-chattawa-low-consonant",
+} as const;
+type TThaiToneReason = (typeof ThaiToneReason)[keyof typeof ThaiToneReason];
+
+function getThaiToneInfo({
   toneMarkInfo,
   consonantClass,
   isDead,
@@ -31,62 +58,110 @@ function getThaiTone({
   toneMarkInfo: ThaiToneMarkInfo;
   consonantClass: "low" | "mid" | "high";
   isDead: boolean;
-}): ThaiTone {
+}): { tone: ThaiTone; reason: TThaiToneReason } {
   const { hasMaiEk, hasMaiTho, hasMaiTri, hasMaiChattawa } = toneMarkInfo;
 
   if (!hasMaiEk && !hasMaiTho && !hasMaiTri && !hasMaiChattawa) {
     // No tone mark
     if (consonantClass === "mid") {
-      return isDead ? "low" : "mid";
+      if (isDead) {
+        return {
+          tone: ThaiTones.Low,
+          reason: ThaiToneReason.NoMarkMidConsonantDead,
+        };
+      } else {
+        return {
+          tone: ThaiTones.Mid,
+          reason: ThaiToneReason.NoMarkMidConsonantLive,
+        };
+      }
     } else if (consonantClass === "high") {
-      return "rising";
+      return {
+        tone: ThaiTones.Rising,
+        reason: ThaiToneReason.NoMarkHighConsonant,
+      };
     } else {
       // low class
-      return "mid";
+      return { tone: ThaiTones.Mid, reason: ThaiToneReason.NoMarkLowConsonant };
     }
   }
 
   // If there's a tone mark
   if (hasMaiEk) {
-    if (consonantClass === "mid" || consonantClass === "high") {
-      return "low";
+    if (consonantClass === "high") {
+      return { tone: ThaiTones.Low, reason: ThaiToneReason.MaiEkHighConsonant };
+    } else if (consonantClass === "mid") {
+      return { tone: ThaiTones.Low, reason: ThaiToneReason.MaiEkMidConsonant };
     } else {
       // low class
-      return "falling";
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiEkLowConsonant,
+      };
     }
   }
 
   if (hasMaiTho) {
-    if (consonantClass === "mid" || consonantClass === "high") {
-      return "falling";
-    } else {
+    if (consonantClass === "high") {
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiThoHighConsonant,
+      };
+    } else if (consonantClass === "mid") {
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiThoMidConsonant,
+      };
+    }
+    {
       // low class
-      return "high";
+      return {
+        tone: ThaiTones.High,
+        reason: ThaiToneReason.MaiThoLowConsonant,
+      };
     }
   }
 
   if (hasMaiTri) {
     // Rare in actual usage
     if (consonantClass === "mid") {
-      return "high";
+      return {
+        tone: ThaiTones.High,
+        reason: ThaiToneReason.MaiTriMidConsonant,
+      };
     } else if (consonantClass === "high") {
       // often considered "falling" or rarely used
-      return "falling";
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiTriHighConsonant,
+      };
     } else {
       // low class
-      return "falling";
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiTriLowConsonant,
+      };
     }
   }
 
   if (hasMaiChattawa) {
     if (consonantClass === "mid") {
-      return "rising";
+      return {
+        tone: ThaiTones.Rising,
+        reason: ThaiToneReason.MaiChattawaMidConsonant,
+      };
     } else if (consonantClass === "high") {
       // rarely used
-      return "falling";
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiChattawaHighConsonant,
+      };
     } else {
       // low class
-      return "falling";
+      return {
+        tone: ThaiTones.Falling,
+        reason: ThaiToneReason.MaiChattawaLowConsonant,
+      };
     }
   }
 
@@ -127,9 +202,13 @@ export function analyzeThaiSyllable(syllable: string) {
   // 3. Check if the syllable is "dead" or "live"
   const isDead = isDeadSyllable(syllable);
 
-  const tone = getThaiTone({ toneMarkInfo, consonantClass, isDead });
+  const { tone, reason } = getThaiToneInfo({
+    toneMarkInfo,
+    consonantClass,
+    isDead,
+  });
 
-  return { tone, toneMarkInfo, initialCluster, consonantClass, isDead };
+  return { tone, reason, toneMarkInfo, initialCluster, consonantClass, isDead };
 }
 
 /**
