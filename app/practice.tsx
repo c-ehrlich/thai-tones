@@ -4,18 +4,18 @@ import {
   StateMachineReducer,
 } from "@/features/practice/state-machine";
 import { getThaiTone } from "@/features/thai-tones/tone";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
 import { useAxiom } from "@/features/logging/axiom";
+import { ReportSyllableIssue } from "@/features/practice/report-syllable-issue";
 
 function Wrapper({ children }: { children: React.ReactNode }) {
-  return <View className="h-full w-full pb-12">{children}</View>;
+  return <View className="h-full w-full pb-safe">{children}</View>;
 }
 
 function App() {
   const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
-  const axiom = useAxiom();
 
   if (state.uiState.status === "init") {
     return (
@@ -48,55 +48,39 @@ function App() {
   if (state.uiState.status === "answer") {
     return (
       <Wrapper>
-        <View className="w-full h-full items-center justify-between">
-          <View className="items-center">
+        <View className="w-full h-full items-center justify-between relative">
+          <Pressable
+            className="w-full items-center pb-4"
+            onPress={() => {
+              if (!state.uiState.currentSyllable) {
+                throw new Error("no current syllable");
+              }
+              console.log("syllable: ", state.uiState.currentSyllable);
+              playAudioFile(state.uiState.currentSyllable);
+            }}
+          >
             <CurrentSyllable syllable={state.uiState.currentSyllable} />
             <Text>tone: {getThaiTone(state.uiState.currentSyllable)}</Text>
+            <Text>Replay audio</Text>
+          </Pressable>
+
+          <View className="absolute top-2 right-2">
+            <ReportSyllableIssue syllable={state.uiState.currentSyllable} />
           </View>
 
-          <View>
-            <Button
-              label="Replay audio"
-              onPress={() => {
-                if (!state.uiState.currentSyllable) {
-                  throw new Error("no current syllable");
-                }
-                console.log("syllable: ", state.uiState.currentSyllable);
-                playAudioFile(state.uiState.currentSyllable);
-              }}
-            />
-            <Button
-              label="Solve right"
-              onPress={() => dispatch({ type: "solve-right" })}
-            />
-            <Button
-              label="Solve wrong"
+          <View className="flex flex-row w-full bg-yellow-100 gap-2">
+            <Pressable
+              className="bg-red-500 flex-1 h-20 items-center justify-center"
               onPress={() => dispatch({ type: "solve-wrong" })}
-            />
-            <Button
-              label="Not a syllable"
-              onPress={() =>
-                axiom.log({
-                  type: "syllable_issue",
-                  event: {
-                    syllable: state.uiState.currentSyllable! ?? null,
-                    issue: "not-a-syllable",
-                  },
-                })
-              }
-            />
-            <Button
-              label="Incorrect audio or explanation"
-              onPress={() =>
-                axiom.log({
-                  type: "syllable_issue",
-                  event: {
-                    syllable: state.uiState.currentSyllable! ?? null,
-                    issue: "incorrect-audio-or-explanation",
-                  },
-                })
-              }
-            />
+            >
+              <Text>Solve wrong</Text>
+            </Pressable>
+            <Pressable
+              className="bg-green-500 flex-1 h-20 items-center justify-center"
+              onPress={() => dispatch({ type: "solve-right" })}
+            >
+              <Text>Solve right</Text>
+            </Pressable>
           </View>
         </View>
       </Wrapper>
@@ -109,7 +93,7 @@ function App() {
 function CurrentSyllable({ syllable }: { syllable: string }) {
   return (
     <View className="w-full items-center">
-      <Text className="text-5xl pt-2">{syllable}</Text>
+      <Text className="text-5xl pt-8 pb-2">{syllable}</Text>
     </View>
   );
 }
