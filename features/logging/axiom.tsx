@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Axiom } from "@axiomhq/js";
 import { useRequiredContext } from "@/util/hooks/useRequiredContext";
-import { AxiomEvent } from "./axiom-event";
+import { type AxiomEvent } from "./axiom-event";
 import { env } from "@/util/env";
 
 const AxiomContext = React.createContext<Axiom | null>(null);
@@ -23,7 +23,7 @@ export function useAxiom() {
       dataset: env.AXIOM_DATASET,
       event,
     });
-    axiom.ingest(env.AXIOM_DATASET!, event);
+    axiom.ingest(env.AXIOM_DATASET, event);
   };
 
   return { log };

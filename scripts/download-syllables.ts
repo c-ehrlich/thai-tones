@@ -28,6 +28,7 @@ type TTSRequest = {
 async function performBatchTTS(requests: TTSRequest[], outputDir: string) {
   try {
     for (const [
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       index,
       { text, voice, format = "audio-16khz-32kbitrate-mono-mp3" },
     ] of requests.entries()) {
@@ -92,6 +93,6 @@ const ttsRequests: TTSRequest[] = lines.map((line) => ({
 //   { text: "การ", voice: "th-TH-AcharaNeural" },
 // ];
 
-performBatchTTS(ttsRequests, "../assets/audio").then(() => {
+void performBatchTTS(ttsRequests, "../assets/audio").then(() => {
   console.log("Batch TTS processing completed.");
 });

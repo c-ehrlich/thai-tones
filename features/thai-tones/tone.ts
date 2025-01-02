@@ -125,7 +125,7 @@ function extractLeadingCluster(syllable: string): string | null {
   // 1) Handle the special "leading ห" case:
   //    If we see ห followed by certain low-class letters (ง, ญ, น, ม, ย, ร, ล, ว, ฬ),
   //    that is usually spelled to create a high tone environment.
-  if (cleaned.length >= 2 && cleaned[0] === "ห") {
+  if (cleaned.length >= 2 && cleaned.startsWith("ห")) {
     const secondChar = cleaned[1];
     // Some typical low class that can be raised:
     // (ง, ญ, น, ม, ย, ร, ล, ว, ฬ)
@@ -190,13 +190,13 @@ function extractLeadingCluster(syllable: string): string | null {
  */
 function getConsonantClass(
   cluster: string,
-  fullSyllable: string
+  _fullSyllable: string
 ): "low" | "mid" | "high" | null {
   // 1) If cluster starts with "ห" + second char in [งญนมยรลวฬ],
   //    treat as high class (leading-silent ห).
   if (
     cluster.length === 2 &&
-    cluster[0] === "ห" &&
+    cluster.startsWith("ห") &&
     /[งญนมยรลวฬ]/.test(cluster[1])
   ) {
     return "high";

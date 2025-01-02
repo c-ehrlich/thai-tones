@@ -7,7 +7,6 @@ export const preloadAudioFile = async (fileName: string) => {
   try {
     // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
 
-    // @ts-expect-error we are intentionally indexing into something that might be undefined
     const file = audioFiles[fileName];
 
     if (!file) {
@@ -18,7 +17,7 @@ export const preloadAudioFile = async (fileName: string) => {
 
     // we will never need the file that long
     setTimeout(() => {
-      sound.unloadAsync();
+      void sound.unloadAsync();
     }, 30_000);
   } catch (error) {
     alert(`Error preloading sound: ${JSON.stringify(error)}`);
@@ -30,7 +29,6 @@ export const playAudioFile = async (fileName: string) => {
   try {
     // fileName = "การ"; // TODO: BEFORE MERGE - don't overwrite the filename
 
-    // @ts-expect-error we are intentionally indexing into something that might be undefined
     const file = audioFiles[fileName];
 
     if (!file) {
@@ -43,7 +41,7 @@ export const playAudioFile = async (fileName: string) => {
 
     // we will never need the file that long
     setTimeout(() => {
-      sound.unloadAsync();
+      void sound.unloadAsync();
     }, 30_000);
   } catch (error) {
     alert(`Error playing sound: ${JSON.stringify(error)}`);

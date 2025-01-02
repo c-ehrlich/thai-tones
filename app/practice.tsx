@@ -7,7 +7,6 @@ import { getThaiTone } from "@/features/thai-tones/tone";
 import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
-import { useAxiom } from "@/features/logging/axiom";
 import { ReportSyllableIssue } from "@/features/practice/report-syllable-issue";
 
 function Wrapper({ children }: { children: React.ReactNode }) {
@@ -56,7 +55,7 @@ function App() {
                 throw new Error("no current syllable");
               }
               console.log("syllable: ", state.uiState.currentSyllable);
-              playAudioFile(state.uiState.currentSyllable);
+              void playAudioFile(state.uiState.currentSyllable);
             }}
           >
             <CurrentSyllable syllable={state.uiState.currentSyllable} />

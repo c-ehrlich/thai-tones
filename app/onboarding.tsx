@@ -1,5 +1,4 @@
-import { Button } from "@/components/button";
-import { OnboardingStep } from "@/features/onboarding/_onboarding-shared";
+import { type OnboardingStep } from "@/features/onboarding/_onboarding-shared";
 import { AreYouSureYouCantRead } from "@/features/onboarding/form-stages/are-you-sure-you-cant-read";
 import { CanYouRead } from "@/features/onboarding/form-stages/can-you-read";
 import { CanYouReallyRead } from "@/features/onboarding/form-stages/can-you-really-read";
@@ -10,14 +9,16 @@ import { SelectKnownConsonants } from "@/features/onboarding/form-stages/select-
 import { SelectKnownVowels } from "@/features/onboarding/form-stages/select-known-vowels";
 import { SplashScreen } from "@/features/onboarding/form-stages/splash-screen";
 import { useState } from "react";
-import { SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 
 export default function OnboardingIndex() {
   const [step, setStep] = useState<OnboardingStep>("splash-screen");
   // TODO: BEFORE MERGE - this needs to change depending on db schema design
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [knownVowels, setKnownVowels] = useState<
     "todo" | "all" | "some" | "none"
   >("todo");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [knownConsonants, setKnownConsonants] = useState<
     "todo" | "all" | "some" | "none"
   >("todo");

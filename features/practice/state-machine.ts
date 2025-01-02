@@ -1,6 +1,5 @@
 import syllables from "./syllables.json";
 import { AliasTable } from "./pick-syllable";
-import { speakText } from "../audio/speak-text";
 import { playAudioFile } from "../audio/sound-file";
 
 type StateMachineAction =
@@ -84,8 +83,7 @@ export function StateMachineReducer(
         throw new Error("currentSyllable is not a string");
       }
 
-      playAudioFile(curr);
-      // speakText(curr);
+      void playAudioFile(curr);
 
       return {
         ...state,

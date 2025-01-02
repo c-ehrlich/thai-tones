@@ -1,4 +1,4 @@
-import { ConfigContext, ExpoConfig } from "expo/config";
+import { type ConfigContext, type ExpoConfig } from "expo/config";
 
 // app.config.js
 export default ({ config }: ConfigContext): ExpoConfig => {

@@ -9,7 +9,6 @@ import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { RootProviders } from "@/components/root-providers";
 import { Globals } from "@/components/globals";
 
@@ -20,7 +19,7 @@ const fetchUserHasOnboarded = async () => {
 
 // TODO: BEFORE MERGE - this doesn't work
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   // const colorScheme = useColorScheme();
@@ -46,12 +45,12 @@ export default function RootLayout() {
       }
     };
 
-    prepareApp();
+    void prepareApp();
 
     if (isReady) {
-      SplashScreen.hideAsync();
+      void SplashScreen.hideAsync();
     }
-  }, []);
+  }, [isReady]);
 
   // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
   // </ThemeProvider>

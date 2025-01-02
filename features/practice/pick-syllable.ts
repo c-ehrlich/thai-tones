@@ -8,7 +8,7 @@ export const bannedSyllables = new Set(["วชน"]);
 export class AliasTable {
   private prob: number[] = [];
   private alias: number[] = [];
-  private size: number = 0;
+  private size = 0;
 
   constructor(private syllFreqs: SyllableFreq[]) {
     this.buildTable();

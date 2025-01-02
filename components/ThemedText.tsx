@@ -1,7 +1,5 @@
 import { Text, type TextProps, StyleSheet } from "react-native";
 
-import { useThemeColor } from "@/hooks/useThemeColor";
-
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
@@ -10,7 +8,9 @@ export type ThemedTextProps = TextProps & {
 
 export function ThemedText({
   style,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lightColor,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   darkColor,
   type = "default",
   ...rest
