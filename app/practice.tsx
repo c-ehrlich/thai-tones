@@ -4,7 +4,6 @@ import {
   StateMachineReducer,
 } from "@/features/practice/state-machine";
 import { getThaiTone } from "@/features/thai-tones/tone";
-import { speakText } from "@/features/audio/speak-text";
 import { Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
@@ -22,7 +21,7 @@ function App() {
 
   if (state.uiState.status === "quiz") {
     return (
-      <View className="flex flex-col">
+      <View>
         <CurrentSyllable syllable={state.uiState.currentSyllable} />
         <Button
           label="Show answer"
@@ -34,7 +33,7 @@ function App() {
 
   if (state.uiState.status === "answer") {
     return (
-      <View className="flex flex-col">
+      <View>
         <CurrentSyllable syllable={state.uiState.currentSyllable} />
         <Text>tone: {getThaiTone(state.uiState.currentSyllable)}</Text>
         <Button
@@ -43,6 +42,7 @@ function App() {
             if (!state.uiState.currentSyllable) {
               throw new Error("no current syllable");
             }
+            console.log("syllable: ", state.uiState.currentSyllable);
             playAudioFile(state.uiState.currentSyllable);
           }}
         />
@@ -86,7 +86,11 @@ function App() {
 }
 
 function CurrentSyllable({ syllable }: { syllable: string }) {
-  return <Text style={{ fontSize: 48 }}>{syllable}</Text>;
+  return (
+    <View style={{ width: "100%", alignItems: "center" }}>
+      <Text style={{ fontSize: 48, paddingTop: 8 }}>{syllable}</Text>
+    </View>
+  );
 }
 
 export default App;
