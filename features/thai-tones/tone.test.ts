@@ -7,8 +7,8 @@ describe("analyzeThaiSyllable", () => {
         expect(analyzeThaiSyllable("กราบ").tone).toBe(ThaiTones.Low);
       });
 
-      it(`"ขลาด" - cluster "ขล" => high, no mark => rising`, () => {
-        expect(analyzeThaiSyllable("ขลาด").tone).toBe(ThaiTones.Rising);
+      it(`"ขลาด" - cluster "ขล" => high, dead => rising`, () => {
+        expect(analyzeThaiSyllable("ขลาด").tone).toBe(ThaiTones.Low);
       });
 
       it(`"หมา" - leading ห + ม => high class => no mark => rising`, () => {
