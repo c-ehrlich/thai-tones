@@ -7,50 +7,33 @@ export type ThaiTone = "mid" | "low" | "falling" | "high" | "rising";
 
 const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
 
-/**
- * Determine the tone of a single Thai syllable using
- * standard Thai tone rules, *plus* some handling of:
- *   - Leading silent "ห" that raises low-class consonants
- *   - Common consonant clusters
- *   - Special letters
- *
- * Returns a ThaiTone or undefined if we cannot classify.
- */
-export function getThaiTone(syllable: string): ThaiTone | undefined {
-  if (!syllable) {
-    throw new Error("Empty syllable");
-  }
+type ThaiToneMarkInfo = {
+  hasMaiEk: boolean;
+  hasMaiTho: boolean;
+  hasMaiTri: boolean;
+  hasMaiChattawa: boolean;
+};
 
-  if (bannedSyllables.has(syllable)) {
-    throw new Error(`Banned syllable: ${syllable}`);
-  }
-
-  if (!onlyContainsThaiCharactersRegex.test(syllable)) {
-    throw new Error(`Syllable contains non thai characters: ${syllable}`);
-  }
-
-  // 1. Identify tone marks
+function getToneMarkInfo(syllable: string): ThaiToneMarkInfo {
   const hasMaiEk = syllable.includes("่"); // ไม้เอก
   const hasMaiTho = syllable.includes("้"); // ไม้โท
   const hasMaiTri = syllable.includes("๊"); // ไม้ตรี
   const hasMaiChattawa = syllable.includes("๋"); // ไม้จัตวา
 
-  // 2. Extract the "initial consonant or cluster" and figure out its class
-  const initialCluster = extractLeadingCluster(syllable);
-  if (!initialCluster) {
-    return undefined; // can't identify
-  }
+  return { hasMaiEk, hasMaiTho, hasMaiTri, hasMaiChattawa };
+}
 
-  const consonantClass = getConsonantClass(initialCluster, syllable);
-  if (!consonantClass) {
-    return undefined;
-  }
+function getThaiTone({
+  toneMarkInfo,
+  consonantClass,
+  isDead,
+}: {
+  toneMarkInfo: ThaiToneMarkInfo;
+  consonantClass: "low" | "mid" | "high";
+  isDead: boolean;
+}): ThaiTone {
+  const { hasMaiEk, hasMaiTho, hasMaiTri, hasMaiChattawa } = toneMarkInfo;
 
-  // 3. Check if the syllable is "dead" or "live"
-  const isDead = isDeadEnding(syllable);
-
-  // 4. Apply standard tone rules
-  //    (summarized reference in the previous code)
   if (!hasMaiEk && !hasMaiTho && !hasMaiTri && !hasMaiChattawa) {
     // No tone mark
     if (consonantClass === "mid") {
@@ -108,7 +91,45 @@ export function getThaiTone(syllable: string): ThaiTone | undefined {
   }
 
   // fallback
-  return undefined;
+  throw new Error(`Unhandled tone mark combination`);
+}
+
+export function analyzeThaiSyllable(syllable: string) {
+  if (!syllable) {
+    throw new Error("Empty syllable");
+  }
+
+  if (bannedSyllables.has(syllable)) {
+    throw new Error(`Banned syllable: ${syllable}`);
+  }
+
+  if (!onlyContainsThaiCharactersRegex.test(syllable)) {
+    throw new Error(`Syllable contains non thai characters: ${syllable}`);
+  }
+
+  // 1. Identify tone marks
+  const toneMarkInfo = getToneMarkInfo(syllable);
+
+  // 2. Extract the "initial consonant or cluster" and figure out its class
+  const initialCluster = extractLeadingCluster(syllable);
+
+  if (!initialCluster) {
+    throw new Error(`No initial cluster found in syllable: ${syllable}`);
+  }
+
+  const consonantClass = getConsonantClass(initialCluster, syllable);
+  if (!consonantClass) {
+    throw new Error(
+      `Cannot determine consonant class for cluster: ${initialCluster} in syllable: ${syllable}`
+    );
+  }
+
+  // 3. Check if the syllable is "dead" or "live"
+  const isDead = isDeadSyllable(syllable);
+
+  const tone = getThaiTone({ toneMarkInfo, consonantClass, isDead });
+
+  return { tone, toneMarkInfo, initialCluster, consonantClass, isDead };
 }
 
 /**
@@ -261,46 +282,61 @@ function getConsonantClass(
   }
 }
 
-/**
- * Check if a syllable ends in a "dead" or "live" fashion.
- * This is simplified. Real Thai can be more complex.
- */
-function isDeadEnding(syllable: string): boolean {
-  // Remove tone marks
-  const cleaned = syllable.replace(/[่้๊๋]/g, "");
+function isDeadSyllable(thaiSyllable: string): boolean {
+  // 1) Normalize (remove tone marks, etc.) for easier parsing
+  // Tone marks: ่ (0xe48), ้ (0xe49), ๊ (0xe4a), ๋ (0xe4b), ์ (0xe4c), ฺ (0xe4d), ๎ (0xe4e)
+  const toneMarkRegex = /[\u0E48-\u0E4E]/g;
+  const cleaned = thaiSyllable.replace(toneMarkRegex, "");
 
-  // Final character
+  // 2) Identify final character(s)
+  // Because Thai might have clusters like 'ร', 'ล' as finals, etc.,
+  // we might check if the last char is a vowel or a consonant,
+  // or if the last two chars form a cluster.
+  // For simplicity, we just look at the last character for now.
   const finalChar = cleaned[cleaned.length - 1] || "";
-  // Some typical "dead" final consonants (stop finals):
-  // (g/k), (d/t), (b/p), etc.
-  const deadFinals = new Set([
+
+  // 3) Define possible stop-final consonants => leads to "dead" syllable
+  const stopFinals = new Set([
+    // Commonly romanized as -k
     "ก",
-    "ด",
-    "บ",
-    "ค",
-    "ต",
-    "ป",
-    "ฏ",
-    "ฑ",
-    "สะ",
-    "จ",
     "ข",
-    "ช",
-    "ทร",
+    "ค",
+    "ฆ",
+    // Commonly romanized as -p
+    "บ",
+    "ป",
+    "ผ",
+    "พ",
+    "ฟ",
+    // Commonly romanized as -t
+    "ด",
+    "ต",
+    "ถ",
+    "ท",
+    "ฑ",
+    "ฒ",
+    "ฎ",
+    "ฏ",
+    "ธ",
+    "ศ",
     "ษ",
     "ส",
+    "จ",
+    // ^ "ศ", "ษ", "ส" can function as a final /t/ in some words
   ]);
-  // If finalChar is in these => treat as dead
-  if (deadFinals.has(finalChar)) {
-    return true;
+
+  // 4) Define short vowel endings => also "dead"
+  // (For many short vowels, the finalChar might be the vowel sign.)
+  const shortVowelSigns = new Set(["ะ", "ั", "ิ", "ึ", "ุ", "็", "๋"]);
+
+  // 5) Check conditions
+  if (stopFinals.has(finalChar)) {
+    return true; // dead
+  }
+  if (shortVowelSigns.has(finalChar)) {
+    return true; // dead (glottal stop implied)
   }
 
-  // Short vowel endings => often dead
-  const deadVowelEndings = new Set(["ะ", "ั", "็", "ิ", "ุ", "ึ", "ํ"]);
-  if (deadVowelEndings.has(finalChar)) {
-    return true;
-  }
-
-  // Otherwise treat as live
+  // Everything else (nasal finals, long vowels, etc.) => live
   return false;
 }

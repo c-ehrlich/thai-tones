@@ -3,7 +3,7 @@ import {
   getInitialState,
   StateMachineReducer,
 } from "@/features/practice/state-machine";
-import { getThaiTone } from "@/features/thai-tones/tone";
+import { analyzeThaiSyllable } from "@/features/thai-tones/tone";
 import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
@@ -59,8 +59,15 @@ function App() {
             }}
           >
             <CurrentSyllable syllable={state.uiState.currentSyllable} />
-            <Text>tone: {getThaiTone(state.uiState.currentSyllable)}</Text>
+            <Text>
+              tone: {analyzeThaiSyllable(state.uiState.currentSyllable).tone}
+            </Text>
             <Text>Replay audio</Text>
+            <Text className="font-mono">
+              {JSON.stringify(
+                analyzeThaiSyllable(state.uiState.currentSyllable)
+              )}
+            </Text>
           </Pressable>
 
           <View className="absolute top-2 right-2">
