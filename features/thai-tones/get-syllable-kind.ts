@@ -7,6 +7,10 @@ export const SyllableKinds = {
 } as const;
 export type SyllableKind = (typeof SyllableKinds)[keyof typeof SyllableKinds];
 
+/**
+ * TODO: the real solution here is to identify vowel, starting consonant/cluster, and
+ * ending consonant, and then decide based on that...
+ */
 export function getSyllableKind(thaiSyllable: string): SyllableKind {
   // return getSyllableLiveOrDeadAndVowelLength(thaiSyllable).ending;
   // 1) Normalize (remove tone marks, etc.) for easier parsing
@@ -61,6 +65,13 @@ export function getSyllableKind(thaiSyllable: string): SyllableKind {
   const shortVowelSigns = new Set(
     ["ะ", " ั ", " ิ", " ึ", " ุ", " ็", " ๋"].map((v) => v.trim())
   );
+
+  // if it starts with any of เ,แ,โ,ใ,ไ and only has one consonant
+  // after the initial vowel, it's live
+  const startingVowels = new Set(["เ", "แ", "โ", "ใ", "ไ"]);
+  if (startingVowels.has(cleaned[0]) && cleaned.length === 2) {
+    return SyllableKinds.Live;
+  }
 
   // 5) Check conditions
   if (shortVowelSigns.has(finalChar)) {

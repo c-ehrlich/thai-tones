@@ -52,5 +52,13 @@ describe("getSyllableKind", () => {
       expect(getSyllableKind("นำ")).toBe(SyllableKinds.Live);
       expect(getSyllableKind("ทำ")).toBe(SyllableKinds.Live);
     });
+
+    it("handles a vowel that's only 'on the left', with only a starting consonant", () => {
+      expect(getSyllableKind("เพ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("แพ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("โพ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("ใพ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("ไพ")).toBe(SyllableKinds.Live);
+    });
   });
 });
