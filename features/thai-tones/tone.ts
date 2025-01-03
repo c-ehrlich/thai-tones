@@ -1,4 +1,13 @@
 import { bannedSyllables } from "../practice/pick-syllable";
+import { extractLeadingCluster } from "./extract-leading-cluster";
+import {
+  type ConsonantClass,
+  ConsonantClasses,
+  getConsonantClass,
+} from "./get-consonant-class";
+import { type SyllableKind, SyllableKinds } from "./get-syllable-kind";
+import { getSyllableLiveOrDeadAndVowelLength } from "./get-syllable-live-or-dead-and-vowel-length";
+import { type VowelLength, VowelLengths } from "./get-syllable-vowel-length";
 
 /**
  * Possible Thai tone labels
@@ -11,35 +20,6 @@ export const ThaiTones = {
   Rising: "Rising",
 };
 export type ThaiTone = (typeof ThaiTones)[keyof typeof ThaiTones];
-
-/**
- * Thai consonant classes
- */
-export const ConsonantClasses = {
-  LC: "LC",
-  MC: "MC",
-  HC: "HC",
-} as const;
-export type ConsonantClass =
-  (typeof ConsonantClasses)[keyof typeof ConsonantClasses];
-
-/**
- * Syllable kinds
- */
-export const SyllableKinds = {
-  Live: "live",
-  Dead: "dead",
-} as const;
-export type SyllableKind = (typeof SyllableKinds)[keyof typeof SyllableKinds];
-
-/**
- * Vowel Lengths
- */
-export const VowelLengths = {
-  Short: "short",
-  Long: "long",
-} as const;
-export type VowelLength = (typeof VowelLengths)[keyof typeof VowelLengths];
 
 const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
 
@@ -271,7 +251,7 @@ export function analyzeThaiSyllable(syllable: string) {
   }
 
   // 3. Check if the syllable is "dead" or "live"
-  const { ending, vowelLength } = getVowelInfo(syllable);
+  const { ending, vowelLength } = getSyllableLiveOrDeadAndVowelLength(syllable);
 
   const { tone, reason } = getThaiToneInfo({
     toneMark,
@@ -289,219 +269,4 @@ export function analyzeThaiSyllable(syllable: string) {
     ending,
     vowelLength,
   };
-}
-
-/**
- * Extracts the leading consonant or common consonant cluster
- * from a Thai syllable. This helps us identify the "initial".
- *
- * Note: If the syllable starts with ห + (ง, ญ, น, ม, ย, ร, ล, ว, ฬ) => treat
- *       as a cluster that might raise the tone class to high.
- */
-function extractLeadingCluster(syllable: string): string | null {
-  // Remove tone marks to avoid confusion
-  const cleaned = syllable.replace(/[่้๊๋]/g, "");
-
-  // 1) Handle the special "leading ห" case:
-  //    If we see ห followed by certain low-class letters (ง, ญ, น, ม, ย, ร, ล, ว, ฬ),
-  //    that is usually spelled to create a high tone environment.
-  if (cleaned.length >= 2 && cleaned.startsWith("ห")) {
-    const secondChar = cleaned[1];
-    // Some typical low class that can be raised:
-    // (ง, ญ, น, ม, ย, ร, ล, ว, ฬ)
-    if (/[งญนมยรลวฬ]/.test(secondChar)) {
-      // treat the cluster as "ห + next consonant"
-      // (Some treat as just "ห" for class detection, but let's return "หX" to handle
-      // it in getConsonantClass if needed.)
-      return cleaned.slice(0, 2);
-    }
-  }
-
-  // 2) Check if the first 2 or 3 chars form a known cluster
-  //    For simplicity, define some typical clusters:
-  const possibleClusters = [
-    "กร",
-    "กล",
-    "ขร",
-    "ขล",
-    "คร",
-    "คล",
-    "ปร",
-    "ปล",
-    "พร",
-    "ผล",
-    "พล",
-    "ทร",
-    "ทว",
-    "ตร",
-    "กล",
-    "คล",
-    "ศร",
-    "สร", // rarely used
-    // etc. Expand if needed
-  ];
-
-  // check up to first 3 chars
-  for (let length = 3; length >= 2; length--) {
-    if (cleaned.length >= length) {
-      const clusterCandidate = cleaned.slice(0, length);
-      if (possibleClusters.includes(clusterCandidate)) {
-        return clusterCandidate;
-      }
-    }
-  }
-
-  // 3) Otherwise, just return the first Thai consonant we see
-  for (const char of cleaned) {
-    if (/[ก-ฮ]/.test(char)) {
-      return char;
-    }
-  }
-
-  return null;
-}
-
-/**
- * Determine the consonant class (low, mid, high) for the extracted cluster.
- * Also handle special letters like ฆ, ฑ, ฒ, ธ, ฟ, ภ, ย, ร, ล, ว, ฬ, ฮ, ฅ, ฌ, ญ, ฤ, ฦ, etc.
- *
- * For leading silent "ห" cluster (e.g., "หน", "หม", "หง"),
- * we treat that as high class (the main reason for that spelling).
- */
-function getConsonantClass(
-  cluster: string,
-  _fullSyllable: string
-): ConsonantClass | null {
-  // 1) If cluster starts with "ห" + second char in [งญนมยรลวฬ],
-  //    treat as high class (leading-silent ห).
-  if (
-    cluster.length === 2 &&
-    cluster.startsWith("ห") &&
-    /[งญนมยรลวฬ]/.test(cluster[1])
-  ) {
-    return ConsonantClasses.HC;
-  }
-
-  // 2) If it's a known multi-char cluster, we can pick the class from the primary consonant:
-  //    Typically the first consonant or second consonant might matter. Let's do a simple approach:
-  //    "ปร" => base is "ป" (mid-class?), "กร" => "ก" (mid), "ทร" => "ท" (low)...
-
-  // Map each cluster to a class if needed:
-  const clusterClassMap: Record<string, ConsonantClass> = {
-    // Examples
-    กร: ConsonantClasses.MC,
-    กล: ConsonantClasses.MC,
-    ขร: ConsonantClasses.HC,
-    ขล: ConsonantClasses.HC,
-    คร: ConsonantClasses.LC,
-    คล: ConsonantClasses.LC,
-    ปร: ConsonantClasses.MC,
-    ปล: ConsonantClasses.MC,
-    พร: ConsonantClasses.LC,
-    ผล: ConsonantClasses.LC,
-    พล: ConsonantClasses.LC,
-    ทร: ConsonantClasses.LC,
-    ทว: ConsonantClasses.LC,
-    ตร: ConsonantClasses.LC, // ต (mid or low?), but typically treated as "low" for tone
-    // etc.
-  };
-  if (clusterClassMap[cluster]) {
-    return clusterClassMap[cluster];
-  }
-
-  // 3) Otherwise, we treat cluster as a single consonant.
-  //    Identify the first consonant char:
-  const consonant = cluster[0];
-
-  // High class
-  const HIGH_CLASS = new Set([
-    "ข",
-    "ฃ",
-    "ฉ",
-    "ฐ",
-    "ถ",
-    "ผ",
-    "ฝ",
-    "ศ",
-    "ษ",
-    "ส",
-    "ห",
-  ]);
-  // Mid class
-  const MID_CLASS = new Set(["ก", "จ", "ฎ", "ฏ", "ด", "ต", "บ", "ป", "อ"]);
-  // Low class is everything else:
-  // (ฆ, ฑ, ฒ, ธ, ฟ, ภ, พ, ฮ, ง, ย, ร, ล, ว, ฬ, ฌ, ญ, ฅ, ฐ (?), etc.)
-
-  if (HIGH_CLASS.has(consonant)) {
-    return ConsonantClasses.HC;
-  } else if (MID_CLASS.has(consonant)) {
-    return ConsonantClasses.MC;
-  } else {
-    return ConsonantClasses.LC;
-  }
-}
-
-function getVowelInfo(thaiSyllable: string): {
-  ending: SyllableKind;
-  vowelLength: VowelLength;
-} {
-  // 1) Normalize (remove tone marks, etc.) for easier parsing
-  // Tone marks: ่ (0xe48), ้ (0xe49), ๊ (0xe4a), ๋ (0xe4b), ์ (0xe4c), ฺ (0xe4d), ๎ (0xe4e)
-  const toneMarkRegex = /[\u0E48-\u0E4E]/g;
-  const cleaned = thaiSyllable.replace(toneMarkRegex, "");
-
-  // 2) Identify final character(s)
-  // Because Thai might have clusters like 'ร', 'ล' as finals, etc.,
-  // we might check if the last char is a vowel or a consonant,
-  // or if the last two chars form a cluster.
-  // For simplicity, we just look at the last character for now.
-  const finalChar = cleaned[cleaned.length - 1] || "";
-
-  // 3) Define possible stop-final consonants => leads to "dead" syllable
-  const stopFinals = new Set([
-    // Commonly romanized as -k
-    "ก",
-    "ข",
-    "ค",
-    "ฆ",
-    // Commonly romanized as -p
-    "บ",
-    "ป",
-    "ผ",
-    "พ",
-    "ฟ",
-    // Commonly romanized as -t
-    "ด",
-    "ต",
-    "ถ",
-    "ท",
-    "ฑ",
-    "ฒ",
-    "ฎ",
-    "ฏ",
-    "ธ",
-    "ศ",
-    "ษ",
-    "ส",
-    "จ",
-    // ^ "ศ", "ษ", "ส" can function as a final /t/ in some words
-  ]);
-
-  // 4) Define short vowel endings => also "dead"
-  // (For many short vowels, the finalChar might be the vowel sign.)
-  const shortVowelSigns = new Set(
-    ["ะ", " ั ", " ิ", " ึ", " ุ", " ็", " ๋"].map((v) => v.trim())
-  );
-
-  // 5) Check conditions
-  if (shortVowelSigns.has(finalChar)) {
-    return { ending: SyllableKinds.Dead, vowelLength: VowelLengths.Short }; // dead (glottal stop implied)
-  }
-
-  if (stopFinals.has(finalChar)) {
-    return { ending: SyllableKinds.Dead, vowelLength: VowelLengths.Long }; // dead
-  }
-
-  // Everything else (nasal finals, long vowels, etc.) => live
-  return { ending: SyllableKinds.Live, vowelLength: VowelLengths.Long };
 }
