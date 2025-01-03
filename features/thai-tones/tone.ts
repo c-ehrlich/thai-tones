@@ -5,9 +5,17 @@ import {
   ConsonantClasses,
   getConsonantClass,
 } from "./get-consonant-class";
-import { type SyllableKind, SyllableKinds } from "./get-syllable-kind";
+import {
+  getSyllableKind,
+  type SyllableKind,
+  SyllableKinds,
+} from "./get-syllable-kind";
 import { getSyllableLiveOrDeadAndVowelLength } from "./get-syllable-live-or-dead-and-vowel-length";
-import { type VowelLength, VowelLengths } from "./get-syllable-vowel-length";
+import {
+  getSyllableVowelLength,
+  type VowelLength,
+  VowelLengths,
+} from "./get-syllable-vowel-length";
 
 /**
  * Possible Thai tone labels
@@ -251,7 +259,9 @@ export function analyzeThaiSyllable(syllable: string) {
   }
 
   // 3. Check if the syllable is "dead" or "live"
-  const { ending, vowelLength } = getSyllableLiveOrDeadAndVowelLength(syllable);
+  // TODO: BEFORE MERGE - this should not be called "ending"...
+  const ending = getSyllableKind(syllable);
+  const vowelLength = getSyllableVowelLength(syllable);
 
   const { tone, reason } = getThaiToneInfo({
     toneMark,
