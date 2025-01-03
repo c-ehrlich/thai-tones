@@ -38,4 +38,19 @@ describe("getSyllableKind", () => {
       expect(getSyllableKind("เลศ")).toBe(SyllableKinds.Dead);
     });
   });
+
+  describe("new cases", () => {
+    it("handles just rue/lue", () => {
+      expect(getSyllableKind("ฤ")).toBe(SyllableKinds.Dead);
+      expect(getSyllableKind("ฦ")).toBe(SyllableKinds.Dead);
+
+      expect(getSyllableKind("ฤๅ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("ฦๅ")).toBe(SyllableKinds.Live);
+    });
+
+    it("handles -am", () => {
+      expect(getSyllableKind("นำ")).toBe(SyllableKinds.Live);
+      expect(getSyllableKind("ทำ")).toBe(SyllableKinds.Live);
+    });
+  });
 });

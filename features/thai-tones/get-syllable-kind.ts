@@ -34,6 +34,7 @@ export function getSyllableKind(thaiSyllable: string): SyllableKind {
     "ผ",
     "พ",
     "ฟ",
+    "ภ",
     // Commonly romanized as -t
     "ด",
     "ต",
@@ -48,7 +49,11 @@ export function getSyllableKind(thaiSyllable: string): SyllableKind {
     "ษ",
     "ส",
     "จ",
+    "ช",
+    "ฌ",
     // ^ "ศ", "ษ", "ส" can function as a final /t/ in some words
+    "ฤ", // not when long ie ฤา
+    "ฦ", // not when long ie ฦา
   ]);
 
   // 4) Define short vowel endings => also "dead"
