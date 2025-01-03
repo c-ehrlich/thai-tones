@@ -68,6 +68,9 @@ function App() {
                 analyzeThaiSyllable(state.uiState.currentSyllable)
               )}
             </Text>
+            <Text>Starting consonant/cluster</Text>
+            <Text>Vowel</Text>
+            <Text>Ending consonant/cluster</Text>
           </Pressable>
 
           <View className="absolute top-2 right-2">

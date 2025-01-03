@@ -1,4 +1,5 @@
 import { bannedSyllables } from "../practice/pick-syllable";
+import { Consonants } from "./consonants";
 import { extractLeadingCluster } from "./extract-leading-cluster";
 import {
   type ConsonantClass,
@@ -262,6 +263,13 @@ export function analyzeThaiSyllable(syllable: string) {
   const ending = getSyllableKind(syllable);
   const vowelLength = getSyllableVowelLength(syllable);
 
+  const initialClusterNames = initialCluster.split("").map((c) => {
+    if (c in Consonants) {
+      return Consonants[c as keyof typeof Consonants].name;
+    }
+    return c;
+  });
+
   const { tone, reason } = getThaiToneInfo({
     toneMark,
     consonantClass,
@@ -274,6 +282,7 @@ export function analyzeThaiSyllable(syllable: string) {
     reason,
     toneMark,
     initialCluster,
+    initialClusterNames,
     consonantClass,
     ending,
     vowelLength,
