@@ -10,7 +10,6 @@ import {
   type SyllableKind,
   SyllableKinds,
 } from "./get-syllable-kind";
-import { getSyllableLiveOrDeadAndVowelLength } from "./get-syllable-live-or-dead-and-vowel-length";
 import {
   getSyllableVowelLength,
   type VowelLength,
