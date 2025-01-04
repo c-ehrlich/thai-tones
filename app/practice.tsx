@@ -8,6 +8,7 @@ import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
 import { ReportSyllableIssue } from "@/features/practice/report-syllable-issue";
+import { useSettingsStore } from "@/features/settings/settings-store";
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return <View className="h-full w-full pb-safe">{children}</View>;
@@ -100,9 +101,14 @@ function App() {
 }
 
 function CurrentSyllable({ syllable }: { syllable: string }) {
+  const font = useSettingsStore((state) => state.font);
+  const fontFamily = font === "modern" ? "Kanit" : undefined;
+
   return (
     <View className="w-full items-center">
-      <Text className="text-5xl pt-8 pb-2">{syllable}</Text>
+      <Text style={{ fontFamily }} className="text-5xl pt-8 pb-2">
+        {syllable}
+      </Text>
     </View>
   );
 }
