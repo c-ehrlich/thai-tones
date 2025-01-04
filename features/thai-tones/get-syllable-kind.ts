@@ -1,3 +1,5 @@
+import { removeToneMarks } from "./remove-tone-marks";
+
 /**
  * Syllable kinds
  */
@@ -12,11 +14,7 @@ export type SyllableKind = (typeof SyllableKinds)[keyof typeof SyllableKinds];
  * ending consonant, and then decide based on that...
  */
 export function getSyllableKind(thaiSyllable: string): SyllableKind {
-  // return getSyllableLiveOrDeadAndVowelLength(thaiSyllable).ending;
-  // 1) Normalize (remove tone marks, etc.) for easier parsing
-  // Tone marks: ่ (0xe48), ้ (0xe49), ๊ (0xe4a), ๋ (0xe4b), ์ (0xe4c), ฺ (0xe4d), ๎ (0xe4e)
-  const toneMarkRegex = /[\u0E48-\u0E4E]/g;
-  const cleaned = thaiSyllable.replace(toneMarkRegex, "");
+  const cleaned = removeToneMarks(thaiSyllable);
 
   // 2) Identify final character(s)
   // Because Thai might have clusters like 'ร', 'ล' as finals, etc.,

@@ -31,35 +31,35 @@ export type ThaiTone = (typeof ThaiTones)[keyof typeof ThaiTones];
 
 const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
 
-const ToneMarkOptions = {
+const ToneMarkers = {
   MaiEk: "MaiEk",
   MaiTho: "MaiTho",
   MaiTri: "MaiTri",
   MaiChattawa: "MaiChattawa",
   None: "None",
 } as const;
-type ToneMarkOption = (typeof ToneMarkOptions)[keyof typeof ToneMarkOptions];
+type ToneMarker = (typeof ToneMarkers)[keyof typeof ToneMarkers];
 
-function getToneMark(syllable: string): ToneMarkOption {
+function getToneMarker(syllable: string): ToneMarker {
   // ไม้เอก
   if (syllable.includes("่")) {
-    return ToneMarkOptions.MaiEk;
+    return ToneMarkers.MaiEk;
   }
 
   // ไม้โท
   if (syllable.includes("้")) {
-    return ToneMarkOptions.MaiTho;
+    return ToneMarkers.MaiTho;
   }
 
   if (syllable.includes("๊")) {
-    return ToneMarkOptions.MaiTri;
+    return ToneMarkers.MaiTri;
   }
 
   if (syllable.includes("๋")) {
-    return ToneMarkOptions.MaiChattawa;
+    return ToneMarkers.MaiChattawa;
   }
 
-  return ToneMarkOptions.None;
+  return ToneMarkers.None;
 }
 
 const ThaiToneReason = {
@@ -86,20 +86,20 @@ const ThaiToneReason = {
 type TThaiToneReason = (typeof ThaiToneReason)[keyof typeof ThaiToneReason];
 
 function getThaiToneInfo({
-  toneMark,
+  toneMarker,
   consonantClass,
   vowelLength,
-  ending,
+  syllableKind,
 }: {
-  toneMark: ToneMarkOption;
+  toneMarker: ToneMarker;
   consonantClass: ConsonantClass;
   vowelLength: VowelLength;
-  ending: SyllableKind;
+  syllableKind: SyllableKind;
 }): { tone: ThaiTone; reason: TThaiToneReason } {
-  if (toneMark === ToneMarkOptions.None) {
+  if (toneMarker === ToneMarkers.None) {
     // No tone mark
     if (consonantClass === ConsonantClasses.MC) {
-      if (ending === SyllableKinds.Dead) {
+      if (syllableKind === SyllableKinds.Dead) {
         return {
           tone: ThaiTones.Low,
           reason: ThaiToneReason.NoMarkMidConsonantDead,
@@ -111,7 +111,7 @@ function getThaiToneInfo({
         };
       }
     } else if (consonantClass === ConsonantClasses.HC) {
-      if (ending === SyllableKinds.Dead) {
+      if (syllableKind === SyllableKinds.Dead) {
         return {
           tone: ThaiTones.Low,
           reason: ThaiToneReason.NoMarkHighConsonantDead,
@@ -124,7 +124,7 @@ function getThaiToneInfo({
       }
     } else {
       // low class
-      if (ending === SyllableKinds.Dead) {
+      if (syllableKind === SyllableKinds.Dead) {
         if (vowelLength === VowelLengths.Short) {
           return {
             tone: ThaiTones.High,
@@ -146,7 +146,7 @@ function getThaiToneInfo({
   }
 
   // If there's a tone mark
-  if (toneMark === ToneMarkOptions.MaiEk) {
+  if (toneMarker === ToneMarkers.MaiEk) {
     if (consonantClass === ConsonantClasses.HC) {
       return { tone: ThaiTones.Low, reason: ThaiToneReason.MaiEkHighConsonant };
     } else if (consonantClass === ConsonantClasses.MC) {
@@ -160,7 +160,7 @@ function getThaiToneInfo({
     }
   }
 
-  if (toneMark === ToneMarkOptions.MaiTho) {
+  if (toneMarker === ToneMarkers.MaiTho) {
     if (consonantClass === ConsonantClasses.HC) {
       return {
         tone: ThaiTones.Falling,
@@ -181,7 +181,7 @@ function getThaiToneInfo({
     }
   }
 
-  if (toneMark === ToneMarkOptions.MaiTri) {
+  if (toneMarker === ToneMarkers.MaiTri) {
     // Rare in actual usage
     if (consonantClass === ConsonantClasses.MC) {
       return {
@@ -203,7 +203,7 @@ function getThaiToneInfo({
     }
   }
 
-  if (toneMark === ToneMarkOptions.MaiChattawa) {
+  if (toneMarker === ToneMarkers.MaiChattawa) {
     if (consonantClass === ConsonantClasses.MC) {
       return {
         tone: ThaiTones.Rising,
@@ -242,7 +242,7 @@ export function analyzeThaiSyllable(syllable: string) {
   }
 
   // 1. Identify tone marks
-  const toneMark = getToneMark(syllable);
+  const toneMarker = getToneMarker(syllable);
 
   // 2. Extract the "initial consonant or cluster" and figure out its class
   const initialCluster = extractLeadingCluster(syllable);
@@ -260,7 +260,7 @@ export function analyzeThaiSyllable(syllable: string) {
 
   // 3. Check if the syllable is "dead" or "live"
   // TODO: BEFORE MERGE - this should not be called "ending"...
-  const ending = getSyllableKind(syllable);
+  const syllableKind = getSyllableKind(syllable);
   const vowelLength = getSyllableVowelLength(syllable);
 
   const initialClusterNames = initialCluster.split("").map((c) => {
@@ -271,20 +271,20 @@ export function analyzeThaiSyllable(syllable: string) {
   });
 
   const { tone, reason } = getThaiToneInfo({
-    toneMark,
+    toneMarker,
     consonantClass,
-    ending,
+    syllableKind: syllableKind,
     vowelLength,
   });
 
   return {
     tone,
     reason,
-    toneMark,
+    toneMark: toneMarker,
     initialCluster,
     initialClusterNames,
     consonantClass,
-    ending,
+    ending: syllableKind,
     vowelLength,
   };
 }

@@ -176,29 +176,52 @@ describe("analyzeThaiSyllable", () => {
         expect(analyzeThaiSyllable("กั๊ก").tone).toBe(ThaiTones.High);
         expect(analyzeThaiSyllable("อิ๊ว").tone).toBe(ThaiTones.High);
         expect(analyzeThaiSyllable("กุ๊ย").tone).toBe(ThaiTones.High);
-        // expect(analyzeThaiSyllable("โป๊").ending).toBe("fff");
-        // expect(analyzeThaiSyllable("โป๊").tone).toBe(ThaiTones.High);
-        // expect(analyzeThaiSyllable("เส้น").tone).toBe(ThaiTones.High);
-        // expect(analyzeThaiSyllable("เส้น").tone).toBe(ThaiTones.High);
       });
       it("high initial consonant, dead syllable, high tone marker", () => {
         // never occurs
       });
 
       // high tone marker, live syllable
-      it("low initial consonant, live syllable, high tone marker", () => {});
-      it("mid initial consonant, live syllable, high tone marker", () => {});
-      it("high initial consonant, live syllable, high tone marker", () => {});
+      it("low initial consonant, live syllable, high tone marker", () => {
+        // never occurs
+      });
+      it("mid initial consonant, live syllable, high tone marker", () => {
+        expect(analyzeThaiSyllable("แบ๊งค์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("เอี๊ยม์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("ก๊วน์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("ปั๊ม์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("โป๊์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("จี๊์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("อิ๊ว์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("กุ๊ย์").tone).toBe(ThaiTones.High);
+        expect(analyzeThaiSyllable("เก๊า์").tone).toBe(ThaiTones.High);
+      });
+      it("high initial consonant, live syllable, high tone marker", () => {
+        // never occurs
+      });
 
       // rising tone marker, dead syllable
-      it("low initial consonant, dead syllable, rising tone marker", () => {});
-      it("mid initial consonant, dead syllable, rising tone marker", () => {});
-      it("high initial consonant, dead syllable, rising tone marker", () => {});
+      it("low initial consonant, dead syllable, rising tone marker", () => {
+        // never occurs
+      });
+      it("mid initial consonant, dead syllable, rising tone marker", () => {
+        expect(analyzeThaiSyllable("โก๋").tone).toBe(ThaiTones.Rising);
+        expect(analyzeThaiSyllable("ตี๋๋").tone).toBe(ThaiTones.Rising);
+      });
+      it("high initial consonant, dead syllable, rising tone marker", () => {
+        // never occurs
+      });
 
       // rising tone marker, live syllable
-      it("low initial consonant, live syllable, rising tone marker", () => {});
-      it("mid initial consonant, live syllable, rising tone marker", () => {});
-      it("high initial consonant, live syllable, rising tone marker", () => {});
+      it("low initial consonant, live syllable, rising tone marker", () => {
+        // never occurs
+      });
+      it("mid initial consonant, live syllable, rising tone marker", () => {
+        // doesn't seem to ever occur?
+      });
+      it("high initial consonant, live syllable, rising tone marker", () => {
+        // never occurs
+      });
     });
 
     describe("non syllables", () => {
