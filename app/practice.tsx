@@ -59,7 +59,7 @@ function App() {
         <View className="w-full h-full items-center justify-between relative">
           <View className="w-full flex flex-col">
             <Pressable
-              className="w-full items-center pb-4"
+              className="w-full items-center pb-2"
               onPress={() => {
                 if (!state.uiState.currentSyllable) {
                   throw new Error("no current syllable");
@@ -69,10 +69,6 @@ function App() {
               }}
             >
               <CurrentSyllable syllable={state.uiState.currentSyllable} />
-              <Text className="text-gray-600 flex-row items-center mt-2">
-                <Text>🔊</Text>
-                <Text className="ml-1">Replay audio</Text>
-              </Text>
             </Pressable>
 
             <View className="w-full px-4">
@@ -83,39 +79,26 @@ function App() {
               </View>
 
               <View className="flex-row justify-between gap-2">
-                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
-                  <Text className="font-bold text-center mb-2">Initial</Text>
-                  <Text className="text-center text-4xl">
-                    {analyzed?.initialCluster}
-                  </Text>
-                  <Text className="text-center text-xs text-gray-600 mt-1">
-                    {analyzed?.initialCluster
-                      ? "Class: " + (analyzed?.consonantClass ?? "unknown")
-                      : "None"}
-                  </Text>
-                </View>
+                <ExplanationSection
+                  sectionName="Initial"
+                  letters={analyzed?.initialCluster ?? "-"}
+                  bottomStart={analyzed?.initialCluster ? "Class:" : undefined}
+                  bottomMain={analyzed?.consonantClass ?? "unknown"}
+                />
 
-                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
-                  <Text className="font-bold text-center mb-2">Vowel</Text>
-                  <Text className="text-center text-4xl">
-                    {analyzed?.vowel}
-                  </Text>
-                  <Text className="text-center text-xs text-gray-600 mt-1">
-                    Length: {analyzed?.vowelLength}
-                  </Text>
-                </View>
+                <ExplanationSection
+                  sectionName="Vowel"
+                  letters={analyzed?.vowel ?? "-"}
+                  bottomStart="Length:"
+                  bottomMain={analyzed?.vowelLength ?? "unknown"}
+                />
 
-                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
-                  <Text className="font-bold text-center mb-2">Final</Text>
-                  <Text className="text-center text-4xl">
-                    {analyzed?.endingConsonant ?? "-"}
-                  </Text>
-                  <Text className="text-center text-xs text-gray-600 mt-1">
-                    {analyzed?.endingConsonant
-                      ? "Kind: " + (analyzed?.syllableKind ?? "unknown")
-                      : "None"}
-                  </Text>
-                </View>
+                <ExplanationSection
+                  sectionName="Final"
+                  letters={analyzed?.endingConsonant ?? "-"}
+                  bottomStart={analyzed?.endingConsonant ? "Kind:" : undefined}
+                  bottomMain={analyzed?.syllableKind ?? "unknown"}
+                />
               </View>
             </View>
           </View>
@@ -152,8 +135,31 @@ function CurrentSyllable({ syllable }: { syllable: string }) {
 
   return (
     <View className="w-full items-center">
-      <Text style={{ fontFamily }} className="text-5xl pt-8 pb-2">
+      <Text style={{ fontFamily }} className="text-[72px] pt-6 pb-2">
         {syllable}
+      </Text>
+    </View>
+  );
+}
+
+function ExplanationSection({
+  sectionName,
+  letters,
+  bottomStart,
+  bottomMain,
+}: {
+  sectionName: string;
+  letters?: string;
+  bottomStart?: string;
+  bottomMain: string;
+}) {
+  return (
+    <View className="flex-1 bg-gray-100 p-4 rounded-lg">
+      <Text className=" text-center mb-2 text-gray-600">{sectionName}</Text>
+      <Text className="text-center text-4xl py-1">{letters ?? "-"}</Text>
+      <Text className="text-center text-xs text-gray-600 mt-1">
+        {bottomStart ? <Text>{bottomStart} </Text> : null}
+        <Text className="text-black font-bold">{bottomMain}</Text>
       </Text>
     </View>
   );

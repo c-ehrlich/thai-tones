@@ -2,9 +2,9 @@
  * Thai consonant classes
  */
 export const ConsonantClasses = {
-  LC: "LC",
-  MC: "MC",
-  HC: "HC",
+  LC: "Low",
+  MC: "Middle",
+  HC: "High",
 } as const;
 export type ConsonantClass =
   (typeof ConsonantClasses)[keyof typeof ConsonantClasses];
