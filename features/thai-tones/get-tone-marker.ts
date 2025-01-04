@@ -9,12 +9,10 @@ export const ToneMarkers = {
 export type ToneMarker = (typeof ToneMarkers)[keyof typeof ToneMarkers];
 
 export function getToneMarker(syllable: string): ToneMarker {
-  // ไม้เอก
   if (syllable.includes("่")) {
     return ToneMarkers.MaiEk;
   }
 
-  // ไม้โท
   if (syllable.includes("้")) {
     return ToneMarkers.MaiTho;
   }
