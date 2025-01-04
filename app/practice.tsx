@@ -3,7 +3,7 @@ import {
   getInitialState,
   StateMachineReducer,
 } from "@/features/practice/state-machine";
-import { analyzeThaiSyllable } from "@/features/thai-tones/tone";
+import { analyzeThaiSyllable } from "@/features/thai-tones/analyze-thai-syllable";
 import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";

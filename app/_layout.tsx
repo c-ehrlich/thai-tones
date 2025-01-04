@@ -20,38 +20,38 @@ const fetchUserHasOnboarded = async () => {
 
 // TODO: BEFORE MERGE - this doesn't work
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-void SplashScreen.preventAutoHideAsync();
+// void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   // const colorScheme = useColorScheme();
 
-  const [isReady, setIsReady] = useState(false);
+  // const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    const prepareApp = async () => {
-      try {
-        const userHasFinishedOnboarding = await fetchUserHasOnboarded();
+  // useEffect(() => {
+  //   const prepareApp = async () => {
+  //     try {
+  //       const userHasFinishedOnboarding = await fetchUserHasOnboarded();
 
-        if (!userHasFinishedOnboarding) {
-          // redirect to onboarding
-          router.push("/onboarding");
-        } else {
-          router.push("/practice");
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        await SplashScreen.hideAsync();
-        setIsReady(true);
-      }
-    };
+  //       if (!userHasFinishedOnboarding) {
+  //         // redirect to onboarding
+  //         router.push("/onboarding");
+  //       } else {
+  //         router.push("/practice");
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     } finally {
+  //       await SplashScreen.hideAsync();
+  //       setIsReady(true);
+  //     }
+  //   };
 
-    void prepareApp();
+  //   void prepareApp();
 
-    if (isReady) {
-      void SplashScreen.hideAsync();
-    }
-  }, [isReady]);
+  //   if (isReady) {
+  //     void SplashScreen.hideAsync();
+  //   }
+  // }, [isReady]);
 
   // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
   // </ThemeProvider>
