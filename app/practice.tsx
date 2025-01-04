@@ -78,7 +78,7 @@ function App() {
               <View className="flex-row justify-between gap-2">
                 <View className="flex-1 bg-gray-100 p-4 rounded-lg">
                   <Text className="font-bold text-center mb-2">Initial</Text>
-                  <Text className="text-center">
+                  <Text className="text-center text-4xl">
                     {analyzed?.initialCluster}
                   </Text>
                   <Text className="text-center text-xs text-gray-600 mt-1">
@@ -90,7 +90,9 @@ function App() {
 
                 <View className="flex-1 bg-gray-100 p-4 rounded-lg">
                   <Text className="font-bold text-center mb-2">Vowel</Text>
-                  <Text className="text-center">{analyzed?.vowel}</Text>
+                  <Text className="text-center text-4xl">
+                    {analyzed?.vowel}
+                  </Text>
                   <Text className="text-center text-xs text-gray-600 mt-1">
                     Length: {analyzed?.vowelLength}
                   </Text>
@@ -98,7 +100,7 @@ function App() {
 
                 <View className="flex-1 bg-gray-100 p-4 rounded-lg">
                   <Text className="font-bold text-center mb-2">Final</Text>
-                  <Text className="text-center">
+                  <Text className="text-center text-4xl">
                     {analyzed?.endingConsonant ?? "-"}
                   </Text>
                   <Text className="text-center text-xs text-gray-600 mt-1">
