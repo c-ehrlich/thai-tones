@@ -4,8 +4,8 @@ import { removeToneMarks } from "./remove-tone-marks";
  * Syllable kinds
  */
 export const SyllableKinds = {
-  Live: "live",
-  Dead: "dead",
+  Live: "Live",
+  Dead: "Dead",
 } as const;
 export type SyllableKind = (typeof SyllableKinds)[keyof typeof SyllableKinds];
 

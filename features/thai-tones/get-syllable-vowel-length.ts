@@ -1,6 +1,6 @@
 export const VowelLengths = {
-  Short: "short",
-  Long: "long",
+  Short: "Short",
+  Long: "Long",
 } as const;
 export type VowelLength = (typeof VowelLengths)[keyof typeof VowelLengths];
 

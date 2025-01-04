@@ -69,11 +69,18 @@ function App() {
               }}
             >
               <CurrentSyllable syllable={state.uiState.currentSyllable} />
-              <Text>Replay audio</Text>
+              <Text className="text-gray-600 flex-row items-center mt-2">
+                <Text>🔊</Text>
+                <Text className="ml-1">Replay audio</Text>
+              </Text>
             </Pressable>
 
             <View className="w-full px-4">
-              <Text className="text-center mb-4">tone: {analyzed?.tone}</Text>
+              <View className="bg-gray-100 rounded-lg py-2 px-4 mb-6">
+                <Text className="text-center text-2xl">
+                  Tone: <Text className="font-bold">{analyzed?.tone}</Text>
+                </Text>
+              </View>
 
               <View className="flex-row justify-between gap-2">
                 <View className="flex-1 bg-gray-100 p-4 rounded-lg">
