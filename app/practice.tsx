@@ -57,28 +57,59 @@ function App() {
     return (
       <Wrapper>
         <View className="w-full h-full items-center justify-between relative">
-          <Pressable
-            className="w-full items-center pb-4"
-            onPress={() => {
-              if (!state.uiState.currentSyllable) {
-                throw new Error("no current syllable");
-              }
-              console.log("syllable: ", state.uiState.currentSyllable);
-              void playAudioFile(state.uiState.currentSyllable);
-            }}
-          >
-            <CurrentSyllable syllable={state.uiState.currentSyllable} />
-            <Text>tone: {analyzed?.tone}</Text>
-            <Text>Replay audio</Text>
-            <Text className="font-mono">{JSON.stringify(analyzed)}</Text>
-            <Text>Starting consonant/cluster: {analyzed?.initialCluster}</Text>
-            <Text>
-              Vowel: {analyzed?.vowel} - {analyzed?.vowelLength}
-            </Text>
-            <Text>
-              Ending consonant/cluster: {analyzed?.endingConsonant ?? "(none)"}
-            </Text>
-          </Pressable>
+          <View className="w-full flex flex-col">
+            <Pressable
+              className="w-full items-center pb-4"
+              onPress={() => {
+                if (!state.uiState.currentSyllable) {
+                  throw new Error("no current syllable");
+                }
+                console.log("syllable: ", state.uiState.currentSyllable);
+                void playAudioFile(state.uiState.currentSyllable);
+              }}
+            >
+              <CurrentSyllable syllable={state.uiState.currentSyllable} />
+              <Text>Replay audio</Text>
+            </Pressable>
+
+            <View className="w-full px-4">
+              <Text className="text-center mb-4">tone: {analyzed?.tone}</Text>
+
+              <View className="flex-row justify-between gap-2">
+                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
+                  <Text className="font-bold text-center mb-2">Initial</Text>
+                  <Text className="text-center">
+                    {analyzed?.initialCluster}
+                  </Text>
+                  <Text className="text-center text-xs text-gray-600 mt-1">
+                    {analyzed?.initialCluster
+                      ? "Class: " + (analyzed?.consonantClass ?? "unknown")
+                      : "None"}
+                  </Text>
+                </View>
+
+                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
+                  <Text className="font-bold text-center mb-2">Vowel</Text>
+                  <Text className="text-center">{analyzed?.vowel}</Text>
+                  <Text className="text-center text-xs text-gray-600 mt-1">
+                    Length: {analyzed?.vowelLength}
+                  </Text>
+                </View>
+
+                <View className="flex-1 bg-gray-100 p-4 rounded-lg">
+                  <Text className="font-bold text-center mb-2">Final</Text>
+                  <Text className="text-center">
+                    {analyzed?.endingConsonant ?? "-"}
+                  </Text>
+                  <Text className="text-center text-xs text-gray-600 mt-1">
+                    {analyzed?.endingConsonant
+                      ? "Kind: " + (analyzed?.syllableKind ?? "unknown")
+                      : "None"}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
 
           <View className="absolute top-2 right-2">
             <ReportSyllableIssue syllable={state.uiState.currentSyllable} />
