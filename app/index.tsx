@@ -1,7 +1,7 @@
 import { Button } from "@/components/button";
 import { Heading } from "@/components/ui/heading";
 import { Link } from "expo-router";
-import { SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 export default function Index() {
   return (

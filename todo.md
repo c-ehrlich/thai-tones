@@ -25,6 +25,15 @@
   - [ ] what do you dislike about this app?
   - [ ] any other comments?
   - [ ] how much would you be willing to pay for unlimited use of this app? $0/2/4/8/16
+- [x] settings
+  - [ ] traditional or modern font (figure out what the right name is for this)
+    - [x] create but it doesn't do anything
+    - [x] rig up
+    - [ ] install a "modern" font and use it for the word info
+  - [ ] light/dark mode?
+    - [x] create but it doesn't do anything
+    - [x] rig up
+    - [ ] make all components respect it
 
 ## Better syllable handling
 - [ ] handle two-syllables like ขนม (maybe break them up?)
