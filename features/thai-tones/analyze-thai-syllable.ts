@@ -9,18 +9,6 @@ import { getSyllableVowelLength } from "./get-syllable-vowel-length";
 import { getToneMarker } from "./get-tone-marker";
 import { removeStartingClusterAndVowel } from "./remove-starting-cluster-and-vowel";
 
-/**
- * Possible Thai tone labels
- */
-export const ThaiTones = {
-  Mid: "Mid",
-  Low: "Low",
-  Falling: "Falling",
-  High: "High",
-  Rising: "Rising",
-};
-export type ThaiTone = (typeof ThaiTones)[keyof typeof ThaiTones];
-
 const onlyContainsThaiCharactersRegex = /^[\u0E00-\u0E7F]+$/;
 
 export function analyzeThaiSyllable(syllable: string) {

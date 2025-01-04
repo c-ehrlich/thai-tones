@@ -2,7 +2,6 @@ import { type ConsonantClass, ConsonantClasses } from "./get-consonant-class";
 import { type SyllableKind, SyllableKinds } from "./get-syllable-kind";
 import { type VowelLength, VowelLengths } from "./get-syllable-vowel-length";
 import { type ToneMarker, ToneMarkers } from "./get-tone-marker";
-import { type ThaiTone, ThaiTones } from "./tone";
 
 // TODO: use these...
 const ThaiToneReason = {
@@ -27,6 +26,16 @@ const ThaiToneReason = {
   MaiChattawaLowConsonant: "mai-chattawa-low-consonant",
 } as const;
 type TThaiToneReason = (typeof ThaiToneReason)[keyof typeof ThaiToneReason];
+
+export const ThaiTones = {
+  Mid: "Mid",
+  Low: "Low",
+  Falling: "Falling",
+  High: "High",
+  Rising: "Rising",
+};
+
+export type ThaiTone = (typeof ThaiTones)[keyof typeof ThaiTones];
 
 export function getThaiToneInfo({
   toneMarker,

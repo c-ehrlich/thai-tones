@@ -1,4 +1,5 @@
-import { analyzeThaiSyllable, ThaiTones } from "./tone";
+import { ThaiTones } from "./get-syllable-tone";
+import { analyzeThaiSyllable } from "./analyze-thai-syllable";
 
 describe("analyzeThaiSyllable", () => {
   describe("tone", () => {
