@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useMemo, useReducer } from "react";
 import {
   getInitialState,
   StateMachineReducer,
@@ -16,6 +16,14 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 function App() {
   const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
+
+  const analyzed = useMemo(() => {
+    if (!state.uiState.currentSyllable) {
+      return undefined;
+    }
+
+    return analyzeThaiSyllable(state.uiState.currentSyllable);
+  }, [state.uiState.currentSyllable]);
 
   if (state.uiState.status === "init") {
     return (
@@ -60,18 +68,16 @@ function App() {
             }}
           >
             <CurrentSyllable syllable={state.uiState.currentSyllable} />
-            <Text>
-              tone: {analyzeThaiSyllable(state.uiState.currentSyllable).tone}
-            </Text>
+            <Text>tone: {analyzed?.tone}</Text>
             <Text>Replay audio</Text>
-            <Text className="font-mono">
-              {JSON.stringify(
-                analyzeThaiSyllable(state.uiState.currentSyllable)
-              )}
+            <Text className="font-mono">{JSON.stringify(analyzed)}</Text>
+            <Text>Starting consonant/cluster: {analyzed?.initialCluster}</Text>
+            <Text>
+              Vowel: {analyzed?.vowel} - {analyzed?.vowelLength}
             </Text>
-            <Text>Starting consonant/cluster</Text>
-            <Text>Vowel</Text>
-            <Text>Ending consonant/cluster</Text>
+            <Text>
+              Ending consonant/cluster: {analyzed?.endingConsonant ?? "(none)"}
+            </Text>
           </Pressable>
 
           <View className="absolute top-2 right-2">
