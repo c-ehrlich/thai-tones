@@ -599,4 +599,15 @@ describe("removeStartingClusterAndVowel", () => {
       });
     });
   });
+
+  describe("tests from bug reports", () => {
+    it("should correctly parse 'แถว'", () => {
+      expect(
+        removeStartingClusterAndVowel({
+          syllable: "แถว",
+          startingCluster: "ถ",
+        })
+      ).toBe("");
+    });
+  });
 });

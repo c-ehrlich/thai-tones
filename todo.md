@@ -36,10 +36,16 @@
     - [ ] make all components respect it
 
 ## Better syllable handling
+- [ ] จารย์ parsed wrong (it thinks ารย is the vowel and รย์ is the final)
+- [ ] ขนาด parsed wrong (vowel -นาด, final นาด)
+- [ ] เปิด parsed wrong (vowel and final)
+- [ ] ไหน parsed wrong (its nai, not hain)
 - [ ] handle two-syllables like ขนม (maybe break them up?)
   - [ ] another example: "implied อะ" (eg บริ)
 - [ ] ...and do something with this in ui
 - [ ] make sure the handling of glides at the bottom here is reasonable https://funtolearnthai.com/vowels_list.php
+- [ ] either delete all words with ธรรม, or handle it correctly
+  - [ ] https://rapidlearnthai.com/more-notes-about-the-%E0%B8%A3%E0%B8%A3-run-vowel/
 
 ## platform
 - [ ] setup gluestack/tailwind prettier stuff https://gluestack.io/ui/docs/home/getting-started/tooling-setup
@@ -71,5 +77,7 @@
   - [x] syllable dead or live
   - [x] vowel long or short
   - [x] tone marker
+- fix tone detection mistakes...
+  - [x] แถว parsed wrong (it thinks ว is the vowel and แ the final consonant)
 
 - [x] setup prettier
