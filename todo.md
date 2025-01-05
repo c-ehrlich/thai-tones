@@ -38,7 +38,6 @@
 ## Better syllable handling
 - [ ] จารย์ parsed wrong (it thinks ารย is the vowel and รย์ is the final)
 - [ ] ขนาด parsed wrong (vowel -นาด, final นาด)
-- [ ] เปิด parsed wrong (vowel and final)
 - [ ] ไหน parsed wrong (its nai, not hain)
 - [ ] handle two-syllables like ขนม (maybe break them up?)
   - [ ] another example: "implied อะ" (eg บริ)
@@ -79,5 +78,6 @@
   - [x] tone marker
 - fix tone detection mistakes...
   - [x] แถว parsed wrong (it thinks ว is the vowel and แ the final consonant)
+  - [x] เปิด parsed wrong (vowel and final)
 
 - [x] setup prettier

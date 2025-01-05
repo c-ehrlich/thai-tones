@@ -609,5 +609,14 @@ describe("removeStartingClusterAndVowel", () => {
         })
       ).toBe("");
     });
+
+    it("should correctly parse 'เปิด'", () => {
+      expect(
+        removeStartingClusterAndVowel({
+          syllable: "เปิด",
+          startingCluster: "ป",
+        })
+      ).toBe("ด");
+    });
   });
 });

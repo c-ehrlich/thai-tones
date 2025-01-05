@@ -28,6 +28,7 @@ export function removeStartingClusterAndVowel({
     "เ-าะ",
     "เ-ีย",
     "เ-ือ",
+    "เ-ิ", // -er
     "เ-อ",
     "เ-า",
     "-ว",
