@@ -8,6 +8,7 @@ import { RootProviders } from "@/components/root-providers";
 import { Globals } from "@/components/globals";
 import * as Font from "expo-font";
 import KanitRegular from "@/assets/fonts/Kanit-Regular.ttf";
+import { LEARN_CHAPTERS } from "@/features/learn/chapters";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 void SplashScreen.preventAutoHideAsync();
@@ -43,9 +44,23 @@ export default function RootLayout() {
   return (
     <Globals>
       <RootProviders>
-        <Stack>
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: true }}>
+          <Stack.Screen
+            name="onboarding"
+            options={{ headerShown: false, title: "Onboarding" }}
+          />
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="learn/index" options={{ title: "Learn" }} />
+          {/* <Stack.Screen name="learn/ch1" options={{ title: "Chapter 1" }} /> */}
+          {LEARN_CHAPTERS.map((ch) => (
+            <Stack.Screen
+              key={`learn-${ch.id}`}
+              name={`learn/${ch.id}`}
+              options={{ title: ch.name }}
+            />
+          ))}
+          <Stack.Screen name="practice" options={{ title: "Practice" }} />
+          <Stack.Screen name="settings" options={{ title: "Settings" }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
