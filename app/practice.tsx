@@ -1,8 +1,5 @@
-import { useEffect, useMemo, useReducer, useState } from "react";
-import {
-  getInitialState,
-  StateMachineReducer,
-} from "@/features/practice/state-machine";
+import { useEffect, useMemo, useState } from "react";
+import { useStateMachineStore } from "@/features/practice/state-machine";
 import { analyzeThaiSyllable } from "@/features/thai-tones/analyze-thai-syllable";
 import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
@@ -41,49 +38,46 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
+  const uiState = useStateMachineStore((state) => state.uiState);
+  const get = useStateMachineStore((state) => state.get);
+  const showAnswer = useStateMachineStore((state) => state.showAnswer);
+  const solveRight = useStateMachineStore((state) => state.solveRight);
+  const solveWrong = useStateMachineStore((state) => state.solveWrong);
 
   const { font, showFontToggle, toggleFont } = usePracticeFont(
-    state.uiState.currentSyllable
+    uiState.currentSyllable
   );
 
   const analyzed = useMemo(() => {
-    if (!state.uiState.currentSyllable) {
+    if (!uiState.currentSyllable) {
       return undefined;
     }
+    return analyzeThaiSyllable(uiState.currentSyllable);
+  }, [uiState.currentSyllable]);
 
-    return analyzeThaiSyllable(state.uiState.currentSyllable);
-  }, [state.uiState.currentSyllable]);
-
-  if (state.uiState.status === "init") {
+  if (uiState.status === "init") {
     return (
       <Wrapper>
         <View className="w-full h-full items-center justify-between">
           <View />
-          <Button
-            label="Get Syllable"
-            onPress={() => dispatch({ type: "get" })}
-          />
+          <Button label="Get Syllable" onPress={() => get()} />
         </View>
       </Wrapper>
     );
   }
 
-  if (state.uiState.status === "quiz") {
+  if (uiState.status === "quiz") {
     return (
       <Wrapper>
         <View className="w-full h-full flex flex-col justify-between items-center">
-          <CurrentSyllable syllable={state.uiState.currentSyllable} />
-          <Button
-            label="Show answer"
-            onPress={() => dispatch({ type: "show-answer" })}
-          />
+          <CurrentSyllable syllable={uiState.currentSyllable} />
+          <Button label="Show answer" onPress={() => showAnswer()} />
         </View>
       </Wrapper>
     );
   }
 
-  if (state.uiState.status === "answer") {
+  if (uiState.status === "answer") {
     return (
       <Wrapper>
         <View className="w-full h-full items-center justify-between relative">
@@ -92,15 +86,15 @@ function App() {
             <Pressable
               className="w-full items-center pb-2"
               onPress={() => {
-                if (!state.uiState.currentSyllable) {
+                if (!uiState.currentSyllable) {
                   throw new Error("no current syllable");
                 }
-                console.log("syllable: ", state.uiState.currentSyllable);
-                void playAudioFile(state.uiState.currentSyllable);
+                console.log("syllable: ", uiState.currentSyllable);
+                void playAudioFile(uiState.currentSyllable);
               }}
             >
               <CurrentSyllable
-                syllable={state.uiState.currentSyllable}
+                syllable={uiState.currentSyllable}
                 overrideFont={font}
               />
             </Pressable>
@@ -141,19 +135,19 @@ function App() {
           </View>
 
           <View className="absolute top-2 right-2">
-            <ReportSyllableIssue syllable={state.uiState.currentSyllable} />
+            <ReportSyllableIssue syllable={uiState.currentSyllable} />
           </View>
 
           <View className="flex flex-row w-full bg-yellow-100 gap-2">
             <Pressable
               className="bg-red-500 flex-1 h-20 items-center justify-center"
-              onPress={() => dispatch({ type: "solve-wrong" })}
+              onPress={() => solveWrong()}
             >
               <Text>Solve wrong</Text>
             </Pressable>
             <Pressable
               className="bg-green-500 flex-1 h-20 items-center justify-center"
-              onPress={() => dispatch({ type: "solve-right" })}
+              onPress={() => solveRight()}
             >
               <Text>Solve right</Text>
             </Pressable>
@@ -205,7 +199,8 @@ function ExplanationSection({
     <View className="flex-1 bg-gray-100 p-4 rounded-lg">
       <Text className="text-center mb-2 text-gray-600">{sectionName}</Text>
       <Text style={{ fontFamily }} className="text-center text-4xl py-1">
-        {letters ?? "-"}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+        {letters || "◌"}
       </Text>
       <Text className="text-center text-xs text-gray-600 mt-1">
         {bottomStart ? <Text>{bottomStart} </Text> : null}
