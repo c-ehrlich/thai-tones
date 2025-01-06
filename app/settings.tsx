@@ -50,12 +50,16 @@ export default function SettingsPage() {
                 <RadioIcon as={CircleIcon} />
               </RadioIndicator>
               <RadioLabel>Traditional</RadioLabel>
+              <Text className="ml-2 text-2xl">สวัสดี</Text>
             </Radio>
             <Radio value="modern">
               <RadioIndicator>
                 <RadioIcon as={CircleIcon} />
               </RadioIndicator>
               <RadioLabel>Modern</RadioLabel>
+              <Text style={{ fontFamily: "Kanit" }} className="ml-2 text-2xl">
+                สวัสดี
+              </Text>
             </Radio>
           </VStack>
         </RadioGroup>
