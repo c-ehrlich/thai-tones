@@ -47,7 +47,6 @@
 
 ## Super wishlist
 - [ ] some automatic way to detect invalid final consonants and remove words with them. eg "จารย"
-- [ ] reset srs should have a confirmation modal and ui to show that it did the thing, also make the button red
 
 ## Remove
 - "อ"
@@ -67,6 +66,7 @@
 - [x] persist practice state (AsyncStorage)
 - [x] SRS
 - [x] ability to reset srs
+- [x] reset srs should have a confirmation modal and ui to show that it did the thing, also make the button red
 - [x] "good enough" answer page
   - [x] starting cluster + class
   - [x] ending consonant

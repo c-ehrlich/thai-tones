@@ -9,8 +9,18 @@ import { VStack } from "@/components/ui/vstack";
 import { Text, View } from "react-native";
 import { CircleIcon } from "@gluestack-ui/themed";
 import { useSettingsStore } from "@/features/settings/settings-store";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { useStateMachineStore } from "@/features/practice/state-machine";
+import {
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@/components/ui/modal";
+import { useState } from "react";
+import { Heading } from "@/components/ui/heading";
 
 export default function SettingsPage() {
   const theme = useSettingsStore((state) => state.theme);
@@ -22,6 +32,8 @@ export default function SettingsPage() {
     (state) => state.setShowFontToggle
   );
   const resetSrs = useStateMachineStore((state) => state.resetSrs);
+  const srsItems = useStateMachineStore((state) => state.srsItems);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const showFontToggle = _showFontToggle ? "true" : "false";
   const setShowFontToggle = (show: "true" | "false") =>
@@ -92,15 +104,50 @@ export default function SettingsPage() {
           </VStack>
         </RadioGroup>
         <Button
-          variant="outline"
-          onPress={() => {
-            resetSrs();
-            // Optional: Show a toast or alert to confirm the reset
-          }}
+          variant="solid"
+          action="negative"
+          onPress={() => setShowConfirmModal(true)}
         >
-          <Text>Reset SRS Progress</Text>
+          <Text>Reset SRS ({srsItems.length} reviews scheduled)</Text>
         </Button>
       </VStack>
+
+      <Modal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <Heading>Reset SRS Progress?</Heading>
+          </ModalHeader>
+          <ModalBody>
+            <Text>
+              This will delete all {srsItems.length} scheduled reviews. This
+              action cannot be undone.
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="outline"
+              onPress={() => setShowConfirmModal(false)}
+              className="mr-2"
+            >
+              <ButtonText>Cancel</ButtonText>
+            </Button>
+            <Button
+              action="negative"
+              variant="solid"
+              onPress={() => {
+                resetSrs();
+                setShowConfirmModal(false);
+              }}
+            >
+              <ButtonText>Reset</ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </View>
   );
 }
