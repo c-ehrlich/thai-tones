@@ -37,8 +37,6 @@
 ## platform
 - [ ] split audio and explanation part of report, optional text box
 - [ ] setup gluestack/tailwind prettier stuff https://gluestack.io/ui/docs/home/getting-started/tooling-setup
-- [ ] SRS
-- [ ] LocalStorage?
 - [ ] ability to skew the algorithm - truncate at top 1k, standard, disproportionately show rare syls
 - [ ] React Native? => would allow not needing a server...
 - [ ] make some features paid - maybe neural voice, study mode, srs
@@ -48,7 +46,8 @@
   - [ ] arrows https://x.com/leeerob/status/1874153083636506794
 
 ## Super wishlist
-- some automatic way to detect invalid final consonants and remove words with them. eg "จารย"
+- [ ] some automatic way to detect invalid final consonants and remove words with them. eg "จารย"
+- [ ] reset srs should have a confirmation modal and ui to show that it did the thing, also make the button red
 
 ## Remove
 - "อ"
@@ -65,6 +64,9 @@
   - [x] set up
   - [x] generate all syllables
   - [x] use in app
+- [x] persist practice state (AsyncStorage)
+- [x] SRS
+- [x] ability to reset srs
 - [x] "good enough" answer page
   - [x] starting cluster + class
   - [x] ending consonant

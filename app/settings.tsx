@@ -9,6 +9,8 @@ import { VStack } from "@/components/ui/vstack";
 import { Text, View } from "react-native";
 import { CircleIcon } from "@gluestack-ui/themed";
 import { useSettingsStore } from "@/features/settings/settings-store";
+import { Button } from "@/components/ui/button";
+import { useStateMachineStore } from "@/features/practice/state-machine";
 
 export default function SettingsPage() {
   const theme = useSettingsStore((state) => state.theme);
@@ -19,6 +21,7 @@ export default function SettingsPage() {
   const _setShowFontToggle = useSettingsStore(
     (state) => state.setShowFontToggle
   );
+  const resetSrs = useStateMachineStore((state) => state.resetSrs);
 
   const showFontToggle = _showFontToggle ? "true" : "false";
   const setShowFontToggle = (show: "true" | "false") =>
@@ -88,6 +91,15 @@ export default function SettingsPage() {
             </Radio>
           </VStack>
         </RadioGroup>
+        <Button
+          variant="outline"
+          onPress={() => {
+            resetSrs();
+            // Optional: Show a toast or alert to confirm the reset
+          }}
+        >
+          <Text>Reset SRS Progress</Text>
+        </Button>
       </VStack>
     </View>
   );
