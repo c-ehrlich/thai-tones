@@ -251,5 +251,12 @@ describe("analyzeThaiSyllable", () => {
       expect(res.vowel).toBe("โ-ะ"); // TODO: use enum
       expect(res.vowelLength).toBe(VowelLengths.Short);
     });
+
+    it("should handle จารย", () => {
+      const res = analyzeThaiSyllable("จารย");
+      expect(res.initialCluster).toBe("จ");
+      expect(res.endingConsonant).toBe("รย");
+      expect(res.vowel).toBe("-า"); // TODO: use enum
+    });
   });
 });

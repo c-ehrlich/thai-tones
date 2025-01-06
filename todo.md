@@ -61,6 +61,9 @@
 - [ ] landing page (thaitones.c-ehrlich.dev, simple RSC react app or whatever)
   - [ ] arrows https://x.com/leeerob/status/1874153083636506794
 
+## Super wishlist
+- some automatic way to detect invalid final consonants and remove words with them. eg "จารย"
+
 # DONE
 
 - [x] super basic TTS (web speech api)

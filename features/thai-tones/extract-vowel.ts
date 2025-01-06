@@ -16,7 +16,7 @@ export function extractVowel({
         .split("")
         .reverse()
         .join("")
-        .replace(endingConsonant, "")
+        .replace(endingConsonant.split("").reverse().join(""), "")
         .split("")
         .reverse()
         .join("")

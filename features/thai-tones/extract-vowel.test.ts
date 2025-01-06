@@ -115,4 +115,16 @@ describe("extract-vowel", () => {
       })
     ).toBe("โ-ะ");
   });
+
+  describe("bug reports", () => {
+    it("จารย", () => {
+      expect(
+        extractVowel({
+          syllable: "จารย",
+          startingCluster: "จ",
+          endingConsonant: "รย",
+        })
+      ).toBe("-า");
+    });
+  });
 });

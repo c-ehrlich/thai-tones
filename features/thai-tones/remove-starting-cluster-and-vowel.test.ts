@@ -627,5 +627,14 @@ describe("removeStartingClusterAndVowel", () => {
         })
       ).toBe("ด");
     });
+
+    it("should correctly handle 'จารย'", () => {
+      expect(
+        removeStartingClusterAndVowel({
+          syllable: "จารย",
+          startingCluster: "จ",
+        })
+      ).toBe("รย");
+    });
   });
 });
