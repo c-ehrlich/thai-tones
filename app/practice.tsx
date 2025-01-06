@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import {
   getInitialState,
   StateMachineReducer,
@@ -8,7 +8,33 @@ import { Pressable, Text, View } from "react-native";
 import { Button } from "@/components/button";
 import { playAudioFile } from "@/features/audio/sound-file";
 import { ReportSyllableIssue } from "@/features/practice/report-syllable-issue";
-import { useSettingsStore } from "@/features/settings/settings-store";
+import {
+  type Font,
+  useSettingsStore,
+} from "@/features/settings/settings-store";
+import { FontAwesome } from "@expo/vector-icons";
+
+function usePracticeFont(currentSyllable?: string) {
+  const [localFont, setLocalFont] = useState<Font | undefined>(undefined);
+  const globalFont = useSettingsStore((state) => state.font);
+  const showFontToggle = useSettingsStore((state) => state.showFontToggle);
+
+  const toggleFont = () => {
+    setLocalFont(
+      (localFont ?? globalFont) === "modern" ? "traditional" : "modern"
+    );
+  };
+
+  useEffect(() => {
+    setLocalFont(undefined);
+  }, [currentSyllable]);
+
+  return {
+    font: localFont ?? globalFont,
+    showFontToggle,
+    toggleFont,
+  };
+}
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return <View className="h-full w-full pb-safe">{children}</View>;
@@ -16,6 +42,10 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 function App() {
   const [state, dispatch] = useReducer(StateMachineReducer, getInitialState());
+
+  const { font, showFontToggle, toggleFont } = usePracticeFont(
+    state.uiState.currentSyllable
+  );
 
   const analyzed = useMemo(() => {
     if (!state.uiState.currentSyllable) {
@@ -57,6 +87,7 @@ function App() {
     return (
       <Wrapper>
         <View className="w-full h-full items-center justify-between relative">
+          {showFontToggle ? <FontToggle onToggle={toggleFont} /> : null}
           <View className="w-full flex flex-col">
             <Pressable
               className="w-full items-center pb-2"
@@ -68,7 +99,10 @@ function App() {
                 void playAudioFile(state.uiState.currentSyllable);
               }}
             >
-              <CurrentSyllable syllable={state.uiState.currentSyllable} />
+              <CurrentSyllable
+                syllable={state.uiState.currentSyllable}
+                overrideFont={font}
+              />
             </Pressable>
 
             <View className="w-full px-4">
@@ -84,6 +118,7 @@ function App() {
                   letters={analyzed?.initialCluster ?? "-"}
                   bottomStart={analyzed?.initialCluster ? "Class:" : undefined}
                   bottomMain={analyzed?.consonantClass ?? "unknown"}
+                  font={font}
                 />
 
                 <ExplanationSection
@@ -91,6 +126,7 @@ function App() {
                   letters={analyzed?.vowel ?? "-"}
                   bottomStart="Length:"
                   bottomMain={analyzed?.vowelLength ?? "unknown"}
+                  font={font}
                 />
 
                 <ExplanationSection
@@ -98,6 +134,7 @@ function App() {
                   letters={analyzed?.endingConsonant ?? "-"}
                   bottomStart={analyzed?.endingConsonant ? "Kind:" : undefined}
                   bottomMain={analyzed?.syllableKind ?? "unknown"}
+                  font={font}
                 />
               </View>
             </View>
@@ -129,12 +166,18 @@ function App() {
   return <p>Unknown UI State</p>;
 }
 
-function CurrentSyllable({ syllable }: { syllable: string }) {
+function CurrentSyllable({
+  syllable,
+  overrideFont,
+}: {
+  syllable: string;
+  overrideFont?: "traditional" | "modern";
+}) {
   const font = useSettingsStore((state) => state.font);
-  const fontFamily = font === "modern" ? "Kanit" : undefined;
+  const fontFamily = (overrideFont ?? font) === "modern" ? "Kanit" : undefined;
 
   return (
-    <View className="w-full items-center">
+    <View className="w-full min-h-40 items-center">
       <Text style={{ fontFamily }} className="text-[72px] pt-6 pb-2">
         {syllable}
       </Text>
@@ -147,21 +190,42 @@ function ExplanationSection({
   letters,
   bottomStart,
   bottomMain,
+  font,
 }: {
   sectionName: string;
   letters?: string;
   bottomStart?: string;
   bottomMain: string;
+  font?: Font;
 }) {
+  const globalFont = useSettingsStore((state) => state.font);
+  const fontFamily = (font ?? globalFont) === "modern" ? "Kanit" : undefined;
+
   return (
     <View className="flex-1 bg-gray-100 p-4 rounded-lg">
-      <Text className=" text-center mb-2 text-gray-600">{sectionName}</Text>
-      <Text className="text-center text-4xl py-1">{letters ?? "-"}</Text>
+      <Text className="text-center mb-2 text-gray-600">{sectionName}</Text>
+      <Text style={{ fontFamily }} className="text-center text-4xl py-1">
+        {letters ?? "-"}
+      </Text>
       <Text className="text-center text-xs text-gray-600 mt-1">
         {bottomStart ? <Text>{bottomStart} </Text> : null}
         <Text className="text-black font-bold">{bottomMain}</Text>
       </Text>
     </View>
+  );
+}
+
+function FontToggle({ onToggle }: { onToggle: () => void }) {
+  return (
+    <Pressable
+      onPress={() => {
+        onToggle();
+      }}
+      className="absolute z-10 top-2 left-2 p-2 bg-gray-100 rounded-lg"
+    >
+      {/* TODO: dont use hex color lol */}
+      <FontAwesome name="font" size={36} color="#ccc" />
+    </Pressable>
   );
 }
 

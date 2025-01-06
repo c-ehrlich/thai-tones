@@ -13,8 +13,16 @@ import { useSettingsStore } from "@/features/settings/settings-store";
 export default function SettingsPage() {
   const theme = useSettingsStore((state) => state.theme);
   const font = useSettingsStore((state) => state.font);
+  const _showFontToggle = useSettingsStore((state) => state.showFontToggle);
   const setTheme = useSettingsStore((state) => state.setTheme);
   const setFont = useSettingsStore((state) => state.setFont);
+  const _setShowFontToggle = useSettingsStore(
+    (state) => state.setShowFontToggle
+  );
+
+  const showFontToggle = _showFontToggle ? "true" : "false";
+  const setShowFontToggle = (show: "true" | "false") =>
+    _setShowFontToggle(show === "true" ? true : false);
 
   return (
     <View className="p-4">
@@ -60,6 +68,23 @@ export default function SettingsPage() {
               <Text style={{ fontFamily: "Kanit" }} className="ml-2 text-2xl">
                 สวัสดี
               </Text>
+            </Radio>
+          </VStack>
+        </RadioGroup>
+        <RadioGroup value={showFontToggle} onChange={setShowFontToggle}>
+          <Text>Show font toggle during practice</Text>
+          <VStack space="sm">
+            <Radio value="true">
+              <RadioIndicator>
+                <RadioIcon as={CircleIcon} />
+              </RadioIndicator>
+              <RadioLabel>Yes</RadioLabel>
+            </Radio>
+            <Radio value="false">
+              <RadioIndicator>
+                <RadioIcon as={CircleIcon} />
+              </RadioIndicator>
+              <RadioLabel>No</RadioLabel>
             </Radio>
           </VStack>
         </RadioGroup>
