@@ -1,11 +1,11 @@
 import { bannedSyllables } from "../practice/pick-syllable";
 import { Consonants } from "./consonants";
-import { extractLeadingCluster } from "./extract-leading-cluster";
+import { extractInitialConsonantCluster } from "./extract-initial-consonant-cluster";
 import { extractVowel } from "./extract-vowel";
 import { getConsonantClass } from "./get-consonant-class";
 import { getSyllableKind } from "./get-syllable-kind";
 import { getThaiToneInfo } from "./get-syllable-tone";
-import { getSyllableVowelLength } from "./get-syllable-vowel-length";
+import { getVowelLength } from "./get-vowel-length";
 import { getToneMarker } from "./get-tone-marker";
 import { removeStartingClusterAndVowel } from "./remove-starting-cluster-and-vowel";
 
@@ -28,11 +28,22 @@ export function analyzeThaiSyllable(syllable: string) {
   const toneMarker = getToneMarker(syllable);
 
   // 2. Extract the "initial consonant or cluster" and figure out its class
-  const initialCluster = extractLeadingCluster(syllable);
+  const initialCluster = extractInitialConsonantCluster(syllable);
 
   if (!initialCluster) {
     throw new Error(`No initial cluster found in syllable: ${syllable}`);
   }
+
+  const endingConsonant = removeStartingClusterAndVowel({
+    syllable: syllable,
+    startingCluster: initialCluster,
+  });
+
+  const vowel = extractVowel({
+    syllable,
+    startingCluster: initialCluster,
+    endingConsonant: endingConsonant,
+  });
 
   const consonantClass = getConsonantClass(initialCluster, syllable);
   if (!consonantClass) {
@@ -41,10 +52,9 @@ export function analyzeThaiSyllable(syllable: string) {
     );
   }
 
-  // 3. Check if the syllable is "dead" or "live"
-  // TODO: BEFORE MERGE - this should not be called "ending"...
   const syllableKind = getSyllableKind(syllable);
-  const vowelLength = getSyllableVowelLength(syllable);
+
+  const vowelLength = getVowelLength(vowel);
 
   const initialClusterNames = initialCluster.split("").map((c) => {
     if (c in Consonants) {
@@ -58,17 +68,6 @@ export function analyzeThaiSyllable(syllable: string) {
     consonantClass,
     syllableKind: syllableKind,
     vowelLength,
-  });
-
-  const endingConsonant = removeStartingClusterAndVowel({
-    syllable: syllable,
-    startingCluster: initialCluster,
-  });
-
-  const vowel = extractVowel({
-    syllable,
-    startingCluster: initialCluster,
-    endingConsonant: endingConsonant,
   });
 
   return {

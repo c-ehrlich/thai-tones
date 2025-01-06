@@ -618,5 +618,14 @@ describe("removeStartingClusterAndVowel", () => {
         })
       ).toBe("ด");
     });
+
+    it("should correctly handle 'ทด'", () => {
+      expect(
+        removeStartingClusterAndVowel({
+          syllable: "ทด",
+          startingCluster: "ท",
+        })
+      ).toBe("ด");
+    });
   });
 });

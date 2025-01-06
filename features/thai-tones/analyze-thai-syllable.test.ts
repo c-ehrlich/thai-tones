@@ -1,5 +1,6 @@
 import { ThaiTones } from "./get-syllable-tone";
 import { analyzeThaiSyllable } from "./analyze-thai-syllable";
+import { VowelLengths } from "./vowels";
 
 describe("analyzeThaiSyllable", () => {
   describe("tone", () => {
@@ -239,6 +240,16 @@ describe("analyzeThaiSyllable", () => {
       it("should throw if there is non thai in the syllable", () => {
         expect(() => analyzeThaiSyllable("hello")).toThrow();
       });
+    });
+  });
+
+  describe("regressions", () => {
+    it("should handle ทด", () => {
+      const res = analyzeThaiSyllable("ทด");
+      expect(res.initialCluster).toBe("ท");
+      expect(res.endingConsonant).toBe("ด");
+      expect(res.vowel).toBe("โ-ะ"); // TODO: use enum
+      expect(res.vowelLength).toBe(VowelLengths.Short);
     });
   });
 });

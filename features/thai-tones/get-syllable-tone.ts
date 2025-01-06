@@ -1,7 +1,7 @@
 import { type ConsonantClass, ConsonantClasses } from "./get-consonant-class";
 import { type SyllableKind, SyllableKinds } from "./get-syllable-kind";
-import { type VowelLength, VowelLengths } from "./get-syllable-vowel-length";
 import { type ToneMarker, ToneMarkers } from "./get-tone-marker";
+import { type VowelLength, VowelLengths } from "./vowels";
 
 // TODO: use these...
 const ThaiToneReason = {

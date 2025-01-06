@@ -5,7 +5,9 @@
  * Note: If the syllable starts with ห + (ง, ญ, น, ม, ย, ร, ล, ว, ฬ) => treat
  *       as a cluster that might raise the tone class to high.
  */
-export function extractLeadingCluster(syllable: string): string | null {
+export function extractInitialConsonantCluster(
+  syllable: string
+): string | null {
   // Remove tone marks to avoid confusion
   const cleaned = syllable.replace(/[่้๊๋]/g, "");
 

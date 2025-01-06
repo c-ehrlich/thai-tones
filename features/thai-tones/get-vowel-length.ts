@@ -1,8 +1,4 @@
-export const VowelLengths = {
-  Short: "Short",
-  Long: "Long",
-} as const;
-export type VowelLength = (typeof VowelLengths)[keyof typeof VowelLengths];
+import { type VowelLength, VowelLengths, Vowels } from "./vowels";
 
 const shortVowelPatterns: string[] = [
   // Single diacritics
@@ -68,8 +64,16 @@ function removeToneMarks(s: string): string {
  * Attempt to identify short vs. long vowels by looking
  * for known patterns from longest to shortest match.
  */
-export function getSyllableVowelLength(syllable: string): VowelLength {
-  const cleaned = removeToneMarks(syllable);
+export function getVowelLength(vowel: string): VowelLength {
+  const cleaned = removeToneMarks(vowel);
+
+  const TEMP_THIS_IS_DUMB__cleanedVowel = vowel.replace("-", "อ");
+
+  if (TEMP_THIS_IS_DUMB__cleanedVowel in Vowels) {
+    // @ts-expect-error idk
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return Vowels[TEMP_THIS_IS_DUMB__cleanedVowel].vowelLength;
+  }
 
   // 1) We match from LONGEST patterns to SHORTEST to avoid partial matches
   //    For example, we don’t want to match "เอะ" inside "เออะ" incorrectly.

@@ -17,6 +17,8 @@
   - [x] get info onto the practice screen
   - [ ] put all of this in a modal?
   - [ ] make it look nice
+  - [ ] (?) info for each section... for exampel ImpliedShortO
+    - [ ] or only for some vowels/consonants/clusters?
 - [ ] track practice count
   - [ ] alternative to mmkv that works with expo go?
 - [ ] after 200 practices, throw up a form about
@@ -45,6 +47,7 @@
 - [ ] make sure the handling of glides at the bottom here is reasonable https://funtolearnthai.com/vowels_list.php
 - [ ] either delete all words with ธรรม, or handle it correctly
   - [ ] https://rapidlearnthai.com/more-notes-about-the-%E0%B8%A3%E0%B8%A3-run-vowel/
+- [ ] show transliteration of components (maybe on tap or sth?)
 
 ## platform
 - [ ] setup gluestack/tailwind prettier stuff https://gluestack.io/ui/docs/home/getting-started/tooling-setup
@@ -79,5 +82,6 @@
 - fix tone detection mistakes...
   - [x] แถว parsed wrong (it thinks ว is the vowel and แ the final consonant)
   - [x] เปิด parsed wrong (vowel and final)
+  - [x] ทด parsed wrong (thinks it has a short vowel)
 
 - [x] setup prettier

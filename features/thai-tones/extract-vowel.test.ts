@@ -105,4 +105,14 @@ describe("extract-vowel", () => {
       })
     ).toBe("เ-็");
   });
+
+  it("should handle implicit short o", () => {
+    expect(
+      extractVowel({
+        syllable: "ทด",
+        startingCluster: "ท",
+        endingConsonant: "ด",
+      })
+    ).toBe("โ-ะ");
+  });
 });
