@@ -49,7 +49,10 @@ export default function RootLayout() {
             name="onboarding"
             options={{ headerShown: false, title: "Onboarding" }}
           />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="index"
+            options={{ title: "Home", headerShown: false }}
+          />
           <Stack.Screen name="learn/index" options={{ title: "Learn" }} />
           {/* <Stack.Screen name="learn/ch1" options={{ title: "Chapter 1" }} /> */}
           {LEARN_CHAPTERS.map((ch) => (
