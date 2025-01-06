@@ -90,30 +90,15 @@ export const useStateMachineStore = create<StateMachineStore>()(
         })),
 
       get: () => {
-        const now = new Date();
         set((state) => {
-          console.log("tktk srs items before", state.srsItems);
-          // Check if first item is due (array is kept sorted)
-          const [firstItem, ...remainingItems] = state.srsItems;
-          if (firstItem && firstItem.due <= now) {
-            return {
-              ...state,
-              uiState: {
-                status: "quiz",
-                currentSyllable: firstItem.syllable,
-              },
-              srsItems: remainingItems,
-            };
-          }
-
-          // If no due items, pick a random syllable
-          const next = aliasTable.sample();
+          const { nextSyllable, remainingSrsItems } = getNextSyllable(state);
           return {
             ...state,
             uiState: {
               status: "quiz",
-              currentSyllable: next,
+              currentSyllable: nextSyllable,
             },
+            srsItems: remainingSrsItems,
           };
         });
       },
@@ -138,8 +123,9 @@ export const useStateMachineStore = create<StateMachineStore>()(
 
       solveRight: () =>
         set((state) => {
+          console.log("tktk srs", state.srsItems);
+          const { nextSyllable, remainingSrsItems } = getNextSyllable(state);
           const curr = state.uiState.currentSyllable;
-          const next = aliasTable.sample();
 
           if (typeof curr !== "string") {
             throw new Error("currentSyllable is not a string");
@@ -149,23 +135,25 @@ export const useStateMachineStore = create<StateMachineStore>()(
             ...state,
             uiState: {
               status: "quiz",
-              currentSyllable: next,
+              currentSyllable: nextSyllable,
             },
             last10: [...state.last10, curr].slice(-10),
+            srsItems: remainingSrsItems,
           };
         }),
 
       solveWrong: () =>
         set((state) => {
+          console.log("tktk srs", state.srsItems);
+          const { nextSyllable, remainingSrsItems } = getNextSyllable(state);
           const curr = state.uiState.currentSyllable;
-          const next = aliasTable.sample();
 
           if (typeof curr !== "string") {
             throw new Error("currentSyllable is not a string");
           }
 
           // Remove any existing SRS items for this syllable
-          const filteredSrsItems = state.srsItems.filter(
+          const filteredSrsItems = remainingSrsItems.filter(
             (item) => item.syllable !== curr
           );
 
@@ -181,7 +169,7 @@ export const useStateMachineStore = create<StateMachineStore>()(
             ...state,
             uiState: {
               status: "quiz",
-              currentSyllable: next,
+              currentSyllable: nextSyllable,
             },
             last10: [...state.last10, curr].slice(-10),
             srsItems: sortedSrsItems,
@@ -194,3 +182,24 @@ export const useStateMachineStore = create<StateMachineStore>()(
     }
   )
 );
+
+function getNextSyllable(state: StateMachineState): {
+  nextSyllable: string;
+  remainingSrsItems: SrsItem[];
+} {
+  const now = new Date();
+  // Check if first item is due (array is kept sorted)
+  const [firstItem, ...remainingItems] = state.srsItems;
+  if (firstItem && firstItem.due <= now) {
+    return {
+      nextSyllable: firstItem.syllable,
+      remainingSrsItems: remainingItems,
+    };
+  }
+
+  // If no due items, pick a random syllable
+  return {
+    nextSyllable: aliasTable.sample(),
+    remainingSrsItems: state.srsItems,
+  };
+}
