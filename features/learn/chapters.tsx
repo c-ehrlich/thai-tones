@@ -1,4 +1,8 @@
-type Chapter = { id: string; name: string; description?: string[] };
+type Chapter = {
+  id: string;
+  name: string;
+  description?: string[];
+};
 export const LEARN_CHAPTERS = [
   {
     id: "ch1",
