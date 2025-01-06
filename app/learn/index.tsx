@@ -8,6 +8,7 @@ export default function LearnIndex() {
     <SafeAreaView>
       <FlatList
         className="p-4"
+        contentContainerClassName="flex flex-col gap-2"
         data={LEARN_CHAPTERS}
         renderItem={({ item }) => (
           // @ts-expect-error not sure why route types are off here
